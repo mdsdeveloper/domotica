@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "400548013074",
+    "firebase_url": "https://domotica-99f1e.firebaseio.com",
+    "project_id": "domotica-99f1e",
+    "storage_bucket": "domotica-99f1e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:400548013074:android:035bed44d7cbef90bb64cb",
+        "android_client_info": {
+          "package_name": "com.magui.flutterappdomotica"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "400548013074-lolv06a2ui33r9afjm32mcm29ubavl86.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.magui.flutterappdomotica",
+            "certificate_hash": "90eea7a67f561933063b0a98b21d0bd8a129f9da"
+          }
+        },
+        {
+          "client_id": "400548013074-9np5q5lv5f3lta15ecls713iafjq8flo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcP71LHz-7Fp7u5FuiW26LywPWWannn2c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "400548013074-9np5q5lv5f3lta15ecls713iafjq8flo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
