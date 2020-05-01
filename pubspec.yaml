@@ -28,6 +28,7 @@ dependencies:
   google_sign_in:
   firebase_storage: ^3.1.5
   cloud_firestore: ^0.13.4+2
+  email_validator: ^1.0.4
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -74,3 +75,15 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+  fonts:
+    - family: Lato
+      fonts:
+        - asset: assets/fonts/Lato-Regular.ttf
+    - family:  CustomIcons
+      fonts:
+        - asset: assets/images/icons/CustomIcons.ttf
+  assets:
+    - assets/images/logo1.jpg
+    - assets/images/neo.jpg
+    - assets/images/sofa.jpg
+  #  - images/a_dot_ham.jpeg
