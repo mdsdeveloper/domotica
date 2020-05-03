@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutterappdomotica/Rooms/ui/screens/home_screen.dart';
+import 'package:flutterappdomotica/Rooms/ui/screens/room_details.dart';
 import 'package:flutterappdomotica/Rooms/ui/widget/add_room.dart';
 import 'package:flutterappdomotica/Rooms/ui/widget/sign_in_app_init.dart';
 import 'package:flutterappdomotica/Users/ui/screens/account_screen.dart';
@@ -14,6 +15,5 @@ Map<String, WidgetBuilder> getApplicationRoutes() {
     'accountScreen': (BuildContext context) => AccountScreen(),
     'forgotPasswordScreen': (BuildContext context) => ForgotPassword(),
     'homeScreen': (BuildContext context) => SignInAppInit(),
-//    'addRoom': (BuildContext context) => AddRoom(),
   };
 }

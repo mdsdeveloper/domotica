@@ -15,7 +15,7 @@ class RoomScreen extends StatefulWidget {
 }
 
 class _RoomScreenState extends State<RoomScreen> {
-  final _roomController = TextEditingController();
+  final _textFieldRoomController = TextEditingController();
   Room room = Room();
   var _selected;
   Icon _iconSelected;
@@ -57,7 +57,7 @@ class _RoomScreenState extends State<RoomScreen> {
 
   Widget _addGridView() {
     return Container(
-      margin: EdgeInsets.only(top: 70, bottom: 50),
+      margin: EdgeInsets.only(top: 80, bottom: 50),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,18 +99,17 @@ class _RoomScreenState extends State<RoomScreen> {
                 Expanded(
                   child: _dropDownList(),
                 ),
-                SizedBox(
-                  height: 10.0,
-                ),
+//                SizedBox(height: 10.0,),
                 Container(
-                  width: 210.0,
+                  width: 220.0,
                   child: TextField(
-                    controller: _roomController,
+                    controller: _textFieldRoomController,
                     keyboardType: TextInputType.text,
                     textCapitalization: TextCapitalization.words,
                     decoration: InputDecoration(
-                        hintText: "Añade nombre habitación",
-                        suffixIcon: _iconSelected),
+                      hintText: "Añade nombre habitación",
+                      suffixIcon: _iconSelected,
+                    ),
                     onChanged: (valor) {
                       setState(() {});
                     },
@@ -143,33 +142,46 @@ class _RoomScreenState extends State<RoomScreen> {
   }
 
   void _addRoomOnList() {
-    room.name = _roomController.text;
+    room.name = _textFieldRoomController.text;
     room.id = idRoom;
     room.iconRoom = _iconSelected;
     if (roomList == null) {
       roomList = List<Room>();
-//      cardList = List<CardCreateRoom>();
+      cardList = List<CardCreateRoom>();
     }
     roomList.add(room);
-//    var cardCreateRoom =
-    CardCreateRoom(room: room);
-//    cardList.add(cardCreateRoom);
+    var cardCreateRoom = CardCreateRoom(room: room);
+    cardList.add(cardCreateRoom);
     idRoom++;
+    clear();
   }
 
   Widget _dropDownList() {
     return DropdownButton<EnumRoom>(
-      icon: Icon(Icons.arrow_drop_down),
-      hint: Text("Selecciona habitación"),
-      underline: Container(height: 1, color: Colors.black54),
+      icon: Container(
+        child: Icon(Icons.arrow_drop_down),
+      ),
+      hint: Padding(
+        padding: const EdgeInsets.only(bottom: 5.0),
+        child: Text(
+          "Selecciona habitación",
+          style: TextStyle(fontSize: 18, fontFamily: "Lato"),
+        ),
+      ),
+      underline: Container(
+        height: 1,
+        color: Colors.black54,
+        margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
+      ),
       iconSize: 50,
       elevation: 16,
       iconEnabledColor: Colors.blue,
       onChanged: (EnumRoom selected) {
         setState(() {
           _selected = selected;
-          _roomController.text = typesOfRoom(selected);
-          _iconSelected = Icon(iconFromRoom(selected));
+          _textFieldRoomController.text = typesOfRoom(selected);
+          _iconSelected =
+              Icon(iconFromRoom(selected), size: 50, color: Colors.black);
           Navigator.of(context).pop();
           _mostrarAlerta(context);
         });
@@ -189,18 +201,22 @@ class _RoomScreenState extends State<RoomScreen> {
 
   List<Widget> _gridViewFiled() {
     cardList.sort((a, b) => a.room.id.compareTo(b.room.id));
-//    return roomList.map((room) => CardCreateRoom(room: room)).toList();
     return cardList != null ? cardList.toList() : [];
   }
 
   void _cleanTextField() {
-    _roomController.clear();
+    _textFieldRoomController.clear();
     _iconSelected = null;
   }
 
   @override
   void dispose() {
-    _roomController.dispose();
+    _textFieldRoomController.dispose();
     super.dispose();
+  }
+
+  void clear() {
+    _textFieldRoomController.clear();
+    room = new Room();
   }
 }

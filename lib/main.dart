@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutterappdomotica/Rooms/model/room.dart';
+import 'package:flutterappdomotica/Rooms/ui/screens/room_details.dart';
 import 'package:flutterappdomotica/routes/route_page.dart';
 import 'package:generic_bloc_provider/generic_bloc_provider.dart';
 
-void main() =>  runApp(MyApp());/*{
+void main() => runApp(MyApp());
+/*{
   SystemChrome.setEnabledSystemUIOverlays([]).then((_){
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((_){
       runApp(MyApp());
@@ -22,7 +25,6 @@ class MyApp extends StatelessWidget {
           title: 'Flutter Demo',
           initialRoute: '/',
           routes: getApplicationRoutes(),
-//          home: InitScreen(),
         ));
   }
 }

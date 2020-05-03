@@ -41,7 +41,7 @@ enum EnumRoom {
         case EnumRoom.sala: return CustomIcons.sala_juegos;
         case EnumRoom.jardin: return CustomIcons.jardin;
         case EnumRoom.patioTrasero: return CustomIcons.patio_delantero;
-        case EnumRoom.patioDelantero: return CustomIcons.icon__1_;
+        case EnumRoom.patioDelantero: return CustomIcons.patio_delantero;
         case EnumRoom.garage: return CustomIcons.garaje;
         case EnumRoom.balcon: return CustomIcons.balcon;
         case EnumRoom.atico: return CustomIcons.terraza;

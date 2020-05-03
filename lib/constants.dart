@@ -33,3 +33,4 @@ const String fontFamilyText = 'Lato';
 int idRoom = 0;
 List<Room> roomList;
 int counterRooms = 0;
+List<CardCreateRoom> cardList;

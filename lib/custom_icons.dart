@@ -26,7 +26,7 @@ class CustomIcons {
   static const IconData armario = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData despacho = IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData garaje = IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData sofa = IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData sofa1 = IconData(0xe806, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData ventana = IconData(0xe809, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData patio_delantero = IconData(0xe80a, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData hierba = IconData(0xe80b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
@@ -45,6 +45,6 @@ class CustomIcons {
   static const IconData balcon = IconData(0xe81b, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData escalera = IconData(0xe81c, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData jardin = IconData(0xe81e, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData icon__1_ = IconData(0xe820, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData sofa = IconData(0xe820, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData cocina = IconData(0xe821, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

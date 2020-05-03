@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterappdomotica/Rooms/model/room.dart';
+import 'package:flutterappdomotica/Rooms/ui/screens/room_details.dart';
 import 'package:flutterappdomotica/constants.dart';
+import 'package:flutterappdomotica/routes/fade_page_route.dart';
 
 class CardCreateRoom extends StatefulWidget {
   final Room room;
@@ -16,34 +18,44 @@ class CardCreateRoom extends StatefulWidget {
 class _CardCreateRoomState extends State<CardCreateRoom> {
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-      color: Colors.white,
-      child: Container(
-        child: Container(
-          alignment: Alignment.center,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Flexible(
-                child: _showImage(),
-              ),
-              Container(
+    return InkWell(
+      onTap: () {
+        Navigator.of(context)
+            .push(FadePageRoute(widget: RoomDetails(room: widget.room)));
+      },
+      child: Hero(
+        tag: widget.room.id,
+        child: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+          color: Colors.white,
+          child: Container(
+            child: Container(
+              alignment: Alignment.center,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Flexible(
+                    child: _showImage(),
+                  ),
+                  Container(
 //                padding: EdgeInsets.all(10.0),
-                child: Text(
-                  _addNameRoom(),
-                  softWrap: true,
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.clip,
-                  style: TextStyle(
-                      fontSize: 18.0,
-                      fontFamily: fontFamilyText,
-                      fontWeight: FontWeight.w500),
-                ),
-              )
-            ],
+                    child: Text(
+                      _addNameRoom(),
+                      softWrap: true,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.clip,
+                      style: TextStyle(
+                          fontSize: 18.0,
+                          fontFamily: fontFamilyText,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  )
+                ],
+              ),
+            ),
           ),
         ),
       ),
@@ -83,11 +95,9 @@ class _CardCreateRoomState extends State<CardCreateRoom> {
     }
     return dev;
   }
+
   @override
   void dispose() {
     super.dispose();
   }
 }
-
-List<CardCreateRoom> cardList;
-
