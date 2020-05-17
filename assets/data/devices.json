@@ -1,0 +1,69 @@
+{
+    "devices" : [
+        {
+            "name" : "Luz techo",
+            "iconOn" : "lightbulb_outline",
+            "iconOff" : "lightbulb_outline",
+            "categoria": "iluminacion",
+            "texto": "Luz techo",
+            "imagen": ""
+        },
+        {
+            "name" : "Persiana",
+            "iconOn" : "comment",
+            "iconOff" : "comment",
+            "categoria": "persiana",
+            "texto": "Persiana",
+            "imagen": ""
+        },
+        {
+            "name" : "Puerta",
+            "iconOn" : "view_day",
+            "iconOff" : "view_day",
+            "categoria": "puertas",
+            "texto": "Puerta",
+            "imagen": ""
+        },
+        {
+            "name" : "Store",
+            "iconOn" : "view_day",
+            "iconOff" : "view_day",
+            "categoria": "puertas",
+            "texto": "Puerta",
+            "imagen": ""
+        },
+        {
+            "name" : "Enchufe",
+            "iconOn" : "view_day",
+            "iconOff" : "view_day",
+            "categoria": "puertas",
+            "texto": "Puerta",
+            "imagen": ""
+        },
+        {
+            "name" : "Toldo",
+            "iconOn" : "view_day",
+            "iconOff" : "view_day",
+            "categoria": "puertas",
+            "texto": "Puerta",
+            "imagen": ""
+        },
+        {
+            "name" : "Cortina",
+            "iconOn" : "view_day",
+            "iconOff" : "view_day",
+            "categoria": "puertas",
+            "texto": "Puerta",
+            "imagen": ""
+        },
+        {
+            "name" : "Portero",
+            "iconOn" : "view_day",
+            "iconOff" : "view_day",
+            "categoria": "puertas",
+            "texto": "Puerta",
+            "imagen": ""
+        }
+
+    ]
+}

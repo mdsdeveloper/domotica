@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterappdomotica/Rooms/ui/screens/profile_screen.dart';
 import 'package:flutterappdomotica/Users/ui/widget/item_profile.dart';
 import 'package:flutterappdomotica/Widget/gradient_back.dart';
 import 'package:flutterappdomotica/Widget/title_header.dart';
@@ -24,7 +26,7 @@ class _SettingScreenState extends State<SettingScreen> {
           Container(
               color: Colors.transparent,
               padding: EdgeInsets.symmetric(horizontal: 10.0),
-              margin: EdgeInsets.only(top: 80, right: 20, left: 20, bottom: 10),
+              margin: EdgeInsets.only(top: 80, right: 10, left: 10, bottom: 10),
               child: ListView(children: _listItem()))
         ],
       ),
@@ -35,6 +37,13 @@ class _SettingScreenState extends State<SettingScreen> {
     return TitleHeader(
       text: "Ajustes",
       size: 20.0,
+      onPressed: (){
+//        Navigator.pushNamed(context, 'profileScreen');
+//        Navigator.push(context,CupertinoPageRoute(builder: (context) {
+//          return ProfileScreen();
+//        }));
+//        Navigator.of(context).pop();
+      },
     );
   }
 
@@ -43,35 +52,35 @@ class _SettingScreenState extends State<SettingScreen> {
 
     listItem
       ..add(ItemProfile(
-          text: "Escenarions", iconData: Icons.filter_none, onPressed: () {}))
-      ..add(Divider(height: 4));
+          text: "Escenarios", iconData: Icons.filter_none, onPressed: () {}))
+      ..add(Divider(height: 2));
     listItem
       ..add(ItemProfile(
           text: "Tutorial", iconData: Icons.movie_filter, onPressed: () {}))
-      ..add(Divider(height: 4));
+      ..add(Divider(height: 2));
     listItem
       ..add(ItemProfile(
           text: "Viviendas", iconData: Icons.home, onPressed: () {}))
-      ..add(Divider(height: 4));
+      ..add(Divider(height: 2));
     listItem
       ..add(ItemProfile(
           text: "Habitaciones", iconData: Icons.input, onPressed: () {}))
-      ..add(Divider(height: 4));
+      ..add(Divider(height: 2));
     listItem
       ..add(ItemProfile(
           text: "Regiones", iconData: Icons.donut_large, onPressed: () {}))
-      ..add(Divider(height: 4));
+      ..add(Divider(height: 2));
     listItem
       ..add(ItemProfile(
           text: "Idiomas", iconData: Icons.language, onPressed: () {}))
-      ..add(Divider(height: 4));
+      ..add(Divider(height: 2));
 
     listItem
       ..add(ItemProfile(
           text: "Condiciones generales",
           iconData: Icons.info_outline,
           onPressed: () {}))
-      ..add(Divider(height: 4));
+      ..add(Divider(height: 2));
     listItem
       ..add(ItemProfile(
           text: "Contacto", iconData: Icons.contact_phone, onPressed: () {}))

@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterappdomotica/Rooms/model/room.dart';
-import 'package:flutterappdomotica/Rooms/ui/widget/card_create_room.dart';
+import 'package:flutterappdomotica/Rooms/ui/screens/home_screen.dart';
+import 'package:flutterappdomotica/Rooms/ui/widget/card_room_create.dart';
+import 'package:flutterappdomotica/Rooms/ui/widget/room_device_widget.dart';
 import 'package:flutterappdomotica/Widget/custom_raised_button.dart';
 import 'package:flutterappdomotica/Widget/gradient_back.dart';
 import 'package:flutterappdomotica/Widget/title_header.dart';
@@ -9,12 +11,12 @@ import 'package:flutterappdomotica/constants.dart';
 import 'package:flutterappdomotica/enumRoom.dart';
 import 'package:flutterappdomotica/utils/key_value.dart';
 
-class RoomScreen extends StatefulWidget {
+class RoomsScreen extends StatefulWidget {
   @override
-  _RoomScreenState createState() => _RoomScreenState();
+  _RoomsScreenState createState() => _RoomsScreenState();
 }
 
-class _RoomScreenState extends State<RoomScreen> {
+class _RoomsScreenState extends State<RoomsScreen> {
   final _textFieldRoomController = TextEditingController();
   Room room = Room();
   var _selected;
@@ -28,8 +30,18 @@ class _RoomScreenState extends State<RoomScreen> {
           GradientBack(height: null),
           _buildAppBarRoom(),
           _addGridView(),
-          _addRoomsBTN(context),
+//          _addRoomsBTN(context),
         ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.blueAccent,
+        elevation: 20,
+        hoverElevation: 30,
+        child: Icon(Icons.add, size: 30),
+        onPressed: (){
+          _mostrarAlerta(context);
+        },
       ),
     );
   }
@@ -38,6 +50,14 @@ class _RoomScreenState extends State<RoomScreen> {
     return TitleHeader(
       text: "Habitaciones",
       size: 20.0,
+      onPressed: (){
+//        Navigator.pushNamed(context, 'homeScreen');
+//        Navigator.push(context,
+//            CupertinoPageRoute(builder: (context) {
+//              return HomeScreen();
+//            }));
+//        Navigator.of(context).pop();
+      },
     );
   }
 
@@ -57,7 +77,7 @@ class _RoomScreenState extends State<RoomScreen> {
 
   Widget _addGridView() {
     return Container(
-      margin: EdgeInsets.only(top: 80, bottom: 50),
+      margin: EdgeInsets.only(top: 80, bottom: 10),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,6 +103,7 @@ class _RoomScreenState extends State<RoomScreen> {
   void _mostrarAlerta(BuildContext context) {
     showDialog(
       context: context,
+      useRootNavigator: true,
       barrierDismissible: true,
       builder: (context) {
         // return alert dialog object
@@ -147,10 +168,11 @@ class _RoomScreenState extends State<RoomScreen> {
     room.iconRoom = _iconSelected;
     if (roomList == null) {
       roomList = List<Room>();
-      cardList = List<CardCreateRoom>();
+      room.lisDevices = List<RoomDeviceWidget>();
+      cardList = List<CardRoomCreate>();
     }
     roomList.add(room);
-    var cardCreateRoom = CardCreateRoom(room: room);
+    var cardCreateRoom = CardRoomCreate(room: room);
     cardList.add(cardCreateRoom);
     idRoom++;
     clear();
@@ -209,14 +231,15 @@ class _RoomScreenState extends State<RoomScreen> {
     _iconSelected = null;
   }
 
+  void clear() {
+    _textFieldRoomController.clear();
+    room = new Room();
+  }
+
   @override
   void dispose() {
     _textFieldRoomController.dispose();
     super.dispose();
   }
 
-  void clear() {
-    _textFieldRoomController.clear();
-    room = new Room();
-  }
 }

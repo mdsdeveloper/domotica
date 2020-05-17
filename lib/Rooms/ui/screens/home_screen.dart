@@ -28,6 +28,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return TitleHeader(
       text: "Inicio",
       size: 20.0,
+      onPressed: (){
+//        Navigator.pushNamed(context, 'homeScreen');
+//        Navigator.of(context).pop();
+      },
     );
   }
 

@@ -6,12 +6,14 @@ class TitleHeader extends StatelessWidget {
   final String text;
   final double size;
   final Widget circleAvatar;
+  final VoidCallback onPressed;
 
   TitleHeader(
       {Key key,
       @required this.text,
       @required this.size,
-      @required this.circleAvatar});
+      this.circleAvatar,
+      this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -22,17 +24,16 @@ class TitleHeader extends StatelessWidget {
           Container(
             padding: EdgeInsets.only(top: 35.0, left: 5.0),
             child: SizedBox(
-              height: 45.0,
+              height:  45.0,
               width: 45.0,
-              child: IconButton(
+              child: onPressed != null ? IconButton(
                   icon: Icon(Icons.arrow_back, color: Colors.white, size: 25),
-                  onPressed: () => Navigator.pop(context)),
+                  onPressed:  () => Navigator.of(context).pop()): null,
             ),
           ),
-//          Expanded(child: SizedBox()),
           Expanded(
             child: Container(
-              padding: EdgeInsets.only(top: 30.0, right: 0.0),
+              padding: EdgeInsets.only(top: 30.0, right: onPressed != null ? 50.0 : 0),
               child: Text(
                 text,
                 textAlign: TextAlign.center,
@@ -44,7 +45,17 @@ class TitleHeader extends StatelessWidget {
               ),
             ),
           ),
-          _addCircleAvatar(),
+          Container(
+            padding: EdgeInsets.only(top: 35.0, left: 5.0),
+            child: SizedBox(
+              height: 45.0,
+              width: 45.0,
+              child: onPressed == null ? IconButton(
+                  icon: Icon(Icons.clear, color: Colors.white, size: 25),
+                  onPressed:  () => Navigator.of(context).pop()): null,
+            ),
+          ),
+//          circleAvatar != null ? _addCircleAvatar() : SizedBox(),
         ],
       ),
     );

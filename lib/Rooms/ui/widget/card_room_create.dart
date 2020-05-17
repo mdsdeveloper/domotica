@@ -1,27 +1,27 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterappdomotica/Rooms/model/room.dart';
-import 'package:flutterappdomotica/Rooms/ui/screens/room_details.dart';
+import 'package:flutterappdomotica/Rooms/ui/screens/room_details_screen.dart';
 import 'package:flutterappdomotica/constants.dart';
 import 'package:flutterappdomotica/routes/fade_page_route.dart';
 
-class CardCreateRoom extends StatefulWidget {
+class CardRoomCreate extends StatefulWidget {
   final Room room;
   final String pathImage;
 
-  CardCreateRoom({this.room, this.pathImage});
+  CardRoomCreate({this.room, this.pathImage});
 
   @override
-  _CardCreateRoomState createState() => _CardCreateRoomState();
+  _CardRoomCreateState createState() => _CardRoomCreateState();
 }
 
-class _CardCreateRoomState extends State<CardCreateRoom> {
+class _CardRoomCreateState extends State<CardRoomCreate> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
         Navigator.of(context)
-            .push(FadePageRoute(widget: RoomDetails(room: widget.room)));
+            .push(FadePageRoute(widget: RoomDetailsScreen(room: widget.room)));
       },
       child: Hero(
         tag: widget.room.id,
@@ -82,7 +82,6 @@ class _CardCreateRoomState extends State<CardCreateRoom> {
         dev = widget.room.iconRoom;
       }
     } else {
-      print(this.widget.room.id);
       dev = Container(
         padding: EdgeInsets.only(bottom: 10.0),
         child: Text(
