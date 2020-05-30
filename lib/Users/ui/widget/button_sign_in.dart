@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterappdomotica/constants.dart';
 
 class ButtonSignIn extends StatefulWidget {
   final double height;
@@ -32,7 +33,7 @@ class _ButtonSignIn extends State<ButtonSignIn> {
           child: Text(
             widget.text,
             style: TextStyle(
-                fontFamily: "Lato",
+                fontFamily: fontFamilyText,
                 fontSize: 28.0,
                 color: Colors.blue
             ),

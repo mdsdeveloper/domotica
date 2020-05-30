@@ -21,7 +21,7 @@ const String iniciarSesionBtn = 'Iniciar sesión';
 
 // Textos de páginas
 const String tituloInicioApp = 'Bienvenid@';
-const String nombreAppText = 'Tu Domotica';
+const String nombreAppText = 'Tu Domótica';
 
 
 // Fuente
