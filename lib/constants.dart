@@ -10,8 +10,8 @@ const String pathBombillaApagada = "assets/images/bombilla-apagada.png";
 
 // nombre de páginas
 
-const String pantallaRegistrar = 'accountScreen';
-const String pantallaLogin = 'loginScreen';
+const String registerPage = 'registerPage';
+const String loginPage = 'loginPage';
 
 
 // Textos de botones
@@ -22,6 +22,8 @@ const String iniciarSesionBtn = 'Iniciar sesión';
 // Textos de páginas
 const String tituloInicioApp = 'Bienvenid@';
 const String nombreAppText = 'Tu Domótica';
+const loginText = "LOGIN";
+const registerAccountText = "Crear cuenta";
 
 
 // Fuente

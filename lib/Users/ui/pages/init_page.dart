@@ -5,17 +5,16 @@ import 'package:flutterappdomotica/Widget/gradient_back.dart';
 import 'package:flutterappdomotica/constants.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class InitScreen extends StatefulWidget {
+class InitPage extends StatefulWidget {
   @override
-  _InitScreenState createState() => _InitScreenState();
+  _InitPageState createState() => _InitPageState();
 }
 
-class _InitScreenState extends State<InitScreen> {
+class _InitPageState extends State<InitPage> {
 //  UserBloc userBloc;
   double _screenWidth;
   double _screenHeight;
   var orientation;
-
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +22,11 @@ class _InitScreenState extends State<InitScreen> {
     _screenHeight = MediaQuery.of(context).size.height;
     orientation = MediaQuery.of(context).orientation;
 //    userBloc = BlocProvider.of<UserBloc>(context);
-    return _handleCurrentSession();
+    return _handleCurrentSession(context);
   }
 
-  Widget _handleCurrentSession() {
-    return signIn();
+  Widget _handleCurrentSession(BuildContext context) {
+    return signIn(context);
     /*StreamBuilder(
       stream: userBloc.authStatus,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -40,7 +39,7 @@ class _InitScreenState extends State<InitScreen> {
     );*/
   }
 
-  Widget signIn() {
+  Widget signIn(BuildContext context) {
     return Scaffold(
       body: Stack(
         alignment: Alignment.center,
@@ -55,29 +54,35 @@ class _InitScreenState extends State<InitScreen> {
                 _crearLogo(),
                 ButtonSignIn(
                   text: iniciarSesionBtn,
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(context, pantallaLogin);
-                  },
-                  width: orientation == Orientation.landscape ?  _screenWidth/2 : _screenWidth/1.2,
-                  height: orientation == Orientation.landscape ? _screenHeight/10 : _screenHeight/15,
+                  onPressed: () => Navigator.pushNamed(context, loginPage),
+                  width: orientation == Orientation.landscape
+                      ? _screenWidth / 2
+                      : _screenWidth / 1.2,
+                  height: orientation == Orientation.landscape
+                      ? _screenHeight / 10
+                      : _screenHeight / 15,
                 ),
                 Container(
-                  padding: EdgeInsets.only(top: _screenHeight/20),
+                  padding: EdgeInsets.only(top: _screenHeight / 20),
                   child: Text(
                     "---- O ----",
                     style: TextStyle(
                         fontWeight: FontWeight.w900,
                         fontSize: 20.0,
                         fontFamily: fontFamilyText,
-                        color: Colors.white
-                    ),
+                        color: Colors.white),
                   ),
                 ),
                 ButtonSignIn(
                   text: registrarBtn,
-                  onPressed: () => Navigator.pushNamed(context, pantallaRegistrar),
-                  width: orientation == Orientation.landscape ?  _screenWidth/2 : _screenWidth/1.2,
-                  height: orientation == Orientation.landscape ? _screenHeight/10 : _screenHeight/15,
+                  onPressed: () =>
+                      Navigator.pushNamed(context, registerPage),
+                  width: orientation == Orientation.landscape
+                      ? _screenWidth / 2
+                      : _screenWidth / 1.2,
+                  height: orientation == Orientation.landscape
+                      ? _screenHeight / 10
+                      : _screenHeight / 15,
                 ),
                 SizedBox(height: 15.0)
               ],
@@ -90,12 +95,12 @@ class _InitScreenState extends State<InitScreen> {
 
   Widget _crearLogo() {
     return Container(
-      margin: EdgeInsets.only(top: _screenHeight/20),
+      margin: EdgeInsets.only(top: _screenHeight / 20),
       width: _screenWidth / 2,
       height: _screenHeight / 4,
       decoration: BoxDecoration(
           image:
-          DecorationImage(fit: BoxFit.cover, image: AssetImage(pathLogo)),
+              DecorationImage(fit: BoxFit.cover, image: AssetImage(pathLogo)),
           borderRadius: BorderRadius.all(Radius.circular(15.0)),
           boxShadow: <BoxShadow>[
             BoxShadow(
@@ -108,7 +113,7 @@ class _InitScreenState extends State<InitScreen> {
 
   Widget _builTitleInitScreen() {
     return Container(
-      margin: EdgeInsets.only(top: _screenHeight/10),
+      margin: EdgeInsets.only(top: _screenHeight / 10),
       alignment: Alignment.topCenter,
       child: Text(
         tituloInicioApp,
@@ -124,7 +129,7 @@ class _InitScreenState extends State<InitScreen> {
 
   Widget _buildNameAppInitScreen() {
     return Container(
-      margin: EdgeInsets.only(top: _screenHeight/15),
+      margin: EdgeInsets.only(top: _screenHeight / 15),
       alignment: Alignment.center,
       child: Text(
         nombreAppText,
@@ -138,4 +143,3 @@ class _InitScreenState extends State<InitScreen> {
     );
   }
 }
-
