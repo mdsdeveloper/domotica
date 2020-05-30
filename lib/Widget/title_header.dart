@@ -60,15 +60,4 @@ class TitleHeader extends StatelessWidget {
       ),
     );
   }
-
-  Widget _addCircleAvatar() {
-    return Container(
-      padding: EdgeInsets.only(top: 30.0, right: 10.0),
-      child: CircleAvatar(
-        backgroundImage: NetworkImage(
-            'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcR0AwFd9jyAXxAC3w5HoMhD-HrxMoLE5SMx4FrcNAiWClgy42D1&usqp=CAU'),
-        radius: 25.0,
-      ),
-    );
   }
-}

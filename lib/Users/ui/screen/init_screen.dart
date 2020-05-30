@@ -1,31 +1,25 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterappdomotica/Users/bloc/user_bloc.dart';
-import 'package:flutterappdomotica/Users/ui/screens/login_screen.dart';
 import 'package:flutterappdomotica/Users/ui/widget/button_sign_in.dart';
+import 'package:flutterappdomotica/Widget/gradient_back.dart';
 import 'package:flutterappdomotica/constants.dart';
-import 'package:flutterappdomotica/main.dart';
-import 'package:flutterappdomotica/widget/gradient_back.dart';
-import 'package:generic_bloc_provider/generic_bloc_provider.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class InitScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    return _InitScreen();
-  }
+  _InitScreenState createState() => _InitScreenState();
 }
 
-class _InitScreen extends State<InitScreen> {
-  UserBloc userBloc;
-  double screenWidth;
-  double screenHeight;
+class _InitScreenState extends State<InitScreen> {
+//  UserBloc userBloc;
+  double _screenWidth;
+  double _screenHeight;
 
 
 
   @override
   Widget build(BuildContext context) {
-    screenWidth = MediaQuery.of(context).size.width;
-    screenHeight = MediaQuery.of(context).size.height;
+    _screenWidth = MediaQuery.of(context).size.width;
+    _screenHeight = MediaQuery.of(context).size.height;
 //    userBloc = BlocProvider.of<UserBloc>(context);
     return _handleCurrentSession();
   }
@@ -62,7 +56,7 @@ class _InitScreen extends State<InitScreen> {
 //                  Navigator.push(context, MaterialPageRoute(
 //                    builder: (context) => LoginScreen()
 //                  ));
-//                  Navigator.pushNamed(context, pantallaLogin);
+//                  Navigator.pushReplacementNamed(context, pantallaLogin);
                   Navigator.pushNamed(context, 'homeScreen');
                 },
                 width: 300.0,
@@ -73,10 +67,10 @@ class _InitScreen extends State<InitScreen> {
                 child: Text(
                   "---- O ----",
                   style: TextStyle(
-                    fontWeight: FontWeight.w900,
-                    fontSize: 20.0,
-                    fontFamily: fontFamilyText,
-                    color: Colors.white
+                      fontWeight: FontWeight.w900,
+                      fontSize: 20.0,
+                      fontFamily: fontFamilyText,
+                      color: Colors.white
                   ),
                 ),
               ),
@@ -96,11 +90,11 @@ class _InitScreen extends State<InitScreen> {
   Widget _crearLogo() {
     return Container(
       margin: EdgeInsets.only(top: 50.0),
-      width: screenWidth / 2,
-      height: screenHeight / 4,
+      width: _screenWidth / 2,
+      height: _screenHeight / 4,
       decoration: BoxDecoration(
           image:
-              DecorationImage(fit: BoxFit.cover, image: AssetImage(pathLogo)),
+          DecorationImage(fit: BoxFit.cover, image: AssetImage(pathLogo)),
           borderRadius: BorderRadius.all(Radius.circular(15.0)),
           boxShadow: <BoxShadow>[
             BoxShadow(
@@ -143,3 +137,4 @@ class _InitScreen extends State<InitScreen> {
     );
   }
 }
+

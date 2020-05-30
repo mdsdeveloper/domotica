@@ -32,6 +32,9 @@ dependencies:
   curved_navigation_bar: ^0.3.2
   flutter_custom_dialog: ^1.0.19
   flushbar: ^1.10.2
+  rxdart: ^0.24.1
+  http: ^0.12.1
+  font_awesome_flutter: ^8.8.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

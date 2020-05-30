@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class ButtonSignIn extends StatefulWidget {
-  double height;
-  double width;
-  String text;
+  final double height;
+  final double width;
+  final String text;
   final VoidCallback onPressed;
 
   ButtonSignIn(
