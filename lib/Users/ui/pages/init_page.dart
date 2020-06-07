@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterappdomotica/Users/bloc/user_bloc.dart';
 import 'package:flutterappdomotica/Users/ui/widget/button_sign_in.dart';
+import 'package:flutterappdomotica/Widget/curved_navigation_bar_init.dart';
 import 'package:flutterappdomotica/Widget/gradient_back.dart';
 import 'package:flutterappdomotica/constants.dart';
+import 'package:flutterappdomotica/providers/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class InitPage extends StatefulWidget {
@@ -11,32 +14,38 @@ class InitPage extends StatefulWidget {
 }
 
 class _InitPageState extends State<InitPage> {
-//  UserBloc userBloc;
   double _screenWidth;
   double _screenHeight;
-  var orientation;
-
+  Orientation _orientation;
+  UserBloc _userBloc;
   @override
   Widget build(BuildContext context) {
     _screenWidth = MediaQuery.of(context).size.width;
     _screenHeight = MediaQuery.of(context).size.height;
-    orientation = MediaQuery.of(context).orientation;
-//    userBloc = BlocProvider.of<UserBloc>(context);
-    return _handleCurrentSession(context);
+    _orientation = MediaQuery.of(context).orientation;
+  _userBloc = Provider.userBloc(context);
+    return _handleCurrentSession(context, _userBloc);
   }
 
-  Widget _handleCurrentSession(BuildContext context) {
-    return signIn(context);
-    /*StreamBuilder(
+
+
+  Widget _handleCurrentSession(BuildContext context, UserBloc userBloc) {
+    print(userBloc.currentUser);
+//    return signIn(context);
+   return StreamBuilder(
       stream: userBloc.authStatus,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
+        // snapshot contiene los datos del usuario
+        print(snapshot);
+        print("El usuario es: " + snapshot.data.toString());
         if (!snapshot.hasData || snapshot.hasError) {
-          return signIn();
+          return signIn(context);
         } else {
-          return signIn();
+//          Navigator.pushReplacementNamed(context, 'homeScreen');
+          return CurvedNavigationBarInit();
         }
       },
-    );*/
+    );
   }
 
   Widget signIn(BuildContext context) {
@@ -54,11 +63,11 @@ class _InitPageState extends State<InitPage> {
                 _crearLogo(),
                 ButtonSignIn(
                   text: iniciarSesionBtn,
-                  onPressed: () => Navigator.pushNamed(context, loginPage),
-                  width: orientation == Orientation.landscape
+                  onPressed: () => Navigator.pushReplacementNamed(context, loginPage),
+                  width: _orientation == Orientation.landscape
                       ? _screenWidth / 2
                       : _screenWidth / 1.2,
-                  height: orientation == Orientation.landscape
+                  height: _orientation == Orientation.landscape
                       ? _screenHeight / 10
                       : _screenHeight / 15,
                 ),
@@ -76,11 +85,11 @@ class _InitPageState extends State<InitPage> {
                 ButtonSignIn(
                   text: registrarBtn,
                   onPressed: () =>
-                      Navigator.pushNamed(context, registerPage),
-                  width: orientation == Orientation.landscape
+                      Navigator.pushReplacementNamed(context, registerPage),
+                  width: _orientation == Orientation.landscape
                       ? _screenWidth / 2
                       : _screenWidth / 1.2,
-                  height: orientation == Orientation.landscape
+                  height: _orientation == Orientation.landscape
                       ? _screenHeight / 10
                       : _screenHeight / 15,
                 ),

@@ -1,5 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterappdomotica/Users/bloc/user_bloc.dart';
+import 'package:flutterappdomotica/Users/service/user_service.dart';
 import 'package:flutterappdomotica/Widget/custom_raised_button.dart';
 import 'package:flutterappdomotica/constants.dart';
 import 'package:flutterappdomotica/providers/provider.dart';
@@ -14,26 +18,34 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   double _screenWidth;
   double _screenHeight;
-  double _formHeight;
   String _emailValidado;
   String _passwordValidado;
   String _confirmarPasswordValidado;
+  bool _isVisiblePass = false;
+  bool _isVisibleRepeatPass = false;
+  Orientation _orientation;
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
   final _confPassController = TextEditingController();
   final _formKeyCreateAccount = GlobalKey<FormState>();
+  bool _isAccepted = false;
+  bool _needAccepted = false;
+  double _widthCeck = 20.0;
+  double _heigthCheck = 20.0;
+  Color _colorCheck = Colors.transparent;
+  Color _colorDecoration = Colors.transparent;
 
   @override
   Widget build(BuildContext context) {
     _screenWidth = MediaQuery.of(context).size.width;
     _screenHeight = MediaQuery.of(context).size.height;
-    _formHeight = _screenHeight / 2;
+    _orientation = MediaQuery.of(context).orientation;
     return Scaffold(
       body: Stack(
         children: <Widget>[
           GradientBack(height: null),
           _buildAppBarRegistration(),
-          _formRegistration()
+          _formRegistration(context)
 
 //          MyCustomForm()
         ],
@@ -41,8 +53,10 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Widget _formRegistration() {
+  Widget _formRegistration(BuildContext context) {
     final loginBloc = Provider.loginBloc(context);
+    final userBloc = Provider.userBloc(context);
+
     return Container(
       margin: EdgeInsets.only(top: 90.0),
       child: SingleChildScrollView(
@@ -50,13 +64,15 @@ class _RegisterPageState extends State<RegisterPage> {
           children: <Widget>[
             SafeArea(
               child: Container(
-                height: 80.0,
+                height: _orientation == Orientation.landscape ? 0.0 : 80.0,
               ),
             ),
             Form(
               key: _formKeyCreateAccount,
               child: Container(
-                width: _screenWidth,
+                width: _orientation == Orientation.landscape
+                    ? _screenWidth / 2
+                    : _screenWidth,
                 margin: EdgeInsets.symmetric(horizontal: 20.0),
                 padding: EdgeInsets.symmetric(vertical: 20.0),
                 decoration: BoxDecoration(
@@ -89,10 +105,12 @@ class _RegisterPageState extends State<RegisterPage> {
                       padding: const EdgeInsets.only(left: 10.0, right: 10.0),
                       child: _buildRepeatPasswordInput(),
                     ),
+                    SizedBox(height: 10.0),
+                    _acceptConditions(context),
                     SizedBox(height: 30.0),
                     Padding(
                       padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                      child: _crearBoton(loginBloc),
+                      child: _crearBoton(context, loginBloc, userBloc),
                     )
                   ],
                 ),
@@ -105,66 +123,185 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Widget _crearBoton(LoginBloc loginBloc) {
+  Container _acceptConditions(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(left: 10.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          AnimatedContainer(
+            decoration: BoxDecoration(
+              border: Border.all(color: _colorDecoration, width: 2.0),
+              color: _colorCheck,
+            ),
+            duration: Duration(seconds: 1),
+            curve: Curves.fastOutSlowIn,
+            width: _widthCeck,
+            height: _heigthCheck,
+            onEnd: () => _restoreForm(),
+            child: Checkbox(
+              value: _isAccepted,
+              onChanged: _aceptaTerminos,
+            ),
+          ),
+          SizedBox(width: 10.0),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              InkWell(
+                  onTap: () => Navigator.pushNamed(context, termsPage),
+                  child: Text(
+                    "Acepto los términos y condiciones",
+                    style: TextStyle(
+                        fontFamily: fontFamilyText, color: Colors.blueAccent),
+                  )),
+              Divider(
+                height: 5.0,
+              ),
+              InkWell(
+                  onTap: () => Navigator.pushNamed(context, policyPage),
+                  child: Text("He leído la política de privacidad.",
+                      style: TextStyle(
+                          fontFamily: fontFamilyText,
+                          color: Colors.blueAccent))),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _aceptaTerminos(value) {
+    setState(() {
+      _isAccepted = !_isAccepted;
+    });
+  }
+
+  Widget _crearBoton(
+      BuildContext context, LoginBloc loginBloc, UserBloc userBloc) {
+
     return CustomRaisedButton(
         text: registerAccountText,
         marginTop: 10,
         onPressed: () {
           if (_formKeyCreateAccount.currentState.validate()) {
-            _cleanTextField();
+            _registerUser(context, loginBloc, userBloc);
           } else {
             print("No validado");
           }
         });
   }
 
+  _registerUser(
+      BuildContext context, LoginBloc loginBloc, UserBloc userBloc) async {
+    if (_isAccepted) {
+      _cleanTextField();
+      FirebaseUser firebaseUser = await userBloc.createUser(
+          context, loginBloc.email, loginBloc.password);
+    } else {
+      _needAccepted = !_isAccepted;
+      _changeForm();
+    }
+  }
+
+  void _restoreForm() {
+    setState(() {
+      _widthCeck = 15.0;
+      _heigthCheck = 15.0;
+      _colorCheck = Colors.white;
+      _colorDecoration = Colors.transparent;
+    });
+  }
+
+  void _changeForm() {
+    setState(() {
+      _widthCeck = 40.0;
+      _heigthCheck = 40.0;
+      _colorDecoration = Colors.black;
+      _colorCheck = Colors.redAccent;
+    });
+  }
+
   Widget _buildAppBarRegistration() {
     return TitleHeader(
       text: "Registrarse",
       size: 20.0,
-      onPressed: () {},
+      onPressed: () => Navigator.pushReplacementNamed(context, initPage),
     );
   }
 
   Widget _buildUserInput(LoginBloc loginBloc) {
-    return TextFormField(
-      controller: _emailController,
-      keyboardType: TextInputType.emailAddress,
-      textCapitalization: TextCapitalization.none,
-      validator: validateEmail,
-      decoration: InputDecoration(
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
-          labelText: 'Email',
-          suffixIcon: Icon(Icons.email)),
-      onChanged: (valor) {},
+    return StreamBuilder(
+      stream: loginBloc.emailStream,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        return TextFormField(
+          controller: _emailController,
+          keyboardType: TextInputType.emailAddress,
+          textCapitalization: TextCapitalization.none,
+          validator: validateEmail,
+          decoration: InputDecoration(
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
+              labelText: 'Email',
+              prefixIcon: Icon(Icons.email)),
+          onChanged: loginBloc.changeEmail,
+        );
+      },
     );
   }
 
   Widget _buildPasswordInput(LoginBloc loginBloc) {
-    return TextFormField(
-      controller: _passController,
-      obscureText: true,
-      textCapitalization: TextCapitalization.none,
-      validator: _validatePassword,
-      decoration: InputDecoration(
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
-          labelText: 'Contraseña',
-          suffixIcon: Icon(Icons.lock)),
-      onChanged: (valor) {},
+    return StreamBuilder(
+      stream: loginBloc.passwordStream,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        return TextFormField(
+          controller: _passController,
+          obscureText: !_isVisiblePass,
+          textCapitalization: TextCapitalization.none,
+          validator: _validatePassword,
+          decoration: InputDecoration(
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
+              labelText: 'Contraseña',
+              prefixIcon: Icon(Icons.lock),
+              suffixIcon: IconButton(
+                icon: Icon(
+                    _isVisiblePass ? Icons.visibility : Icons.visibility_off),
+                onPressed: () => _showPassword(1),
+              )),
+          onChanged: loginBloc.changePassword,
+        );
+      },
     );
+  }
+
+  void _showPassword(int typePass) {
+    if (typePass == 1) {
+      _isVisiblePass = !_isVisiblePass;
+    } else {
+      _isVisibleRepeatPass = !_isVisibleRepeatPass;
+    }
+    setState(() {});
   }
 
   Widget _buildRepeatPasswordInput() {
     return TextFormField(
       controller: _confPassController,
-      obscureText: true,
+      obscureText: !_isVisibleRepeatPass,
       textCapitalization: TextCapitalization.sentences,
       validator: _validateConfirmationPassword,
       enableInteractiveSelection: true,
       decoration: InputDecoration(
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
           labelText: 'Confirmar contraseña',
-          suffixIcon: Icon(Icons.lock)),
+          prefixIcon: Icon(Icons.lock),
+          suffixIcon: IconButton(
+            icon: Icon(
+                _isVisibleRepeatPass ? Icons.visibility : Icons.visibility_off),
+            onPressed: () => _showPassword(2),
+          )),
       onChanged: (valor) {},
     );
   }
@@ -185,6 +322,8 @@ class _RegisterPageState extends State<RegisterPage> {
   String _validatePassword(String value) {
     if (value.isEmpty) {
       _passwordValidado = "Error debe rellenar el campo";
+    } else if (value.length < 6) {
+      _passwordValidado = "Error, debe tener un tamaño mayor a 5 caracteres";
     } else {
       _passwordValidado = null;
     }
@@ -208,6 +347,7 @@ class _RegisterPageState extends State<RegisterPage> {
     _emailController.clear();
     _passController.clear();
     _confPassController.clear();
+    _isAccepted = false;
   }
 
   @override

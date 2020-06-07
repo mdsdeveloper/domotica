@@ -1,6 +1,8 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterappdomotica/Users/bloc/user_bloc.dart';
+import 'package:flutterappdomotica/Users/ui/widget/verified_show_dialog.dart';
 import 'package:flutterappdomotica/Widget/custom_raised_button.dart';
 import 'package:flutterappdomotica/constants.dart';
 import 'package:flutterappdomotica/providers/provider.dart';
@@ -19,35 +21,40 @@ class _LoginScreen extends State<LoginPage> {
   double _screenHeight;
   String _emailValidado;
   String _passwordValidado;
+  bool _isVisiblePass = false;
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
   final _formKeyLogin = GlobalKey<FormState>();
+  Orientation _orientation;
 
   @override
   Widget build(BuildContext context) {
     _screenWidth = MediaQuery.of(context).size.width;
     _screenHeight = MediaQuery.of(context).size.height;
+    _orientation = MediaQuery.of(context).orientation;
+
     return Scaffold(
       body: Stack(
         children: <Widget>[
           GradientBack(height: null),
-          _buildAppBarLogin(),
+          _buildAppBarLogin(context),
           _loginForm(context),
         ],
       ),
     );
   }
 
-  Widget _buildAppBarLogin() {
+  Widget _buildAppBarLogin(BuildContext context) {
     return TitleHeader(
       text: "Iniciar sesión",
       size: 20.0,
-      onPressed: () {},
+      onPressed: () => Navigator.pushReplacementNamed(context, initPage),
     );
   }
 
   Widget _loginForm(BuildContext context) {
-    final loginBloc = Provider.loginBloc(context);
+    final _loginBloc = Provider.loginBloc(context);
+    final _userBloc = Provider.userBloc(context);
 
     return Container(
       margin: EdgeInsets.only(top: 90),
@@ -56,13 +63,15 @@ class _LoginScreen extends State<LoginPage> {
           children: <Widget>[
             SafeArea(
               child: Container(
-                height: 80.0,
+                height: _orientation == Orientation.landscape ? 0.0 : 80.0,
               ),
             ),
             Form(
               key: _formKeyLogin,
               child: Container(
-                width: _screenWidth,
+                width: _orientation == Orientation.landscape
+                    ? _screenWidth / 2
+                    : _screenWidth,
                 margin: EdgeInsets.symmetric(horizontal: 20.0),
                 padding: EdgeInsets.symmetric(vertical: 20.0),
 //              padding: EdgeInsets.only(left: 20.0, right: 20.0),
@@ -84,12 +93,12 @@ class _LoginScreen extends State<LoginPage> {
                     SizedBox(height: 30.0),
                     Padding(
                       padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                      child: _buildUserInput(loginBloc),
+                      child: _buildUserInput(_loginBloc),
                     ),
                     Divider(),
                     Padding(
                       padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                      child: _buildPasswordInput(loginBloc),
+                      child: _buildPasswordInput(_loginBloc),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(left: 10.0, right: 10.0),
@@ -98,7 +107,7 @@ class _LoginScreen extends State<LoginPage> {
                     SizedBox(height: 30.0),
                     Padding(
                       padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                      child: _crearBoton(loginBloc),
+                      child: _submitButton(context, _loginBloc, _userBloc),
                     )
                   ],
                 ),
@@ -111,14 +120,29 @@ class _LoginScreen extends State<LoginPage> {
     );
   }
 
-  Widget _crearBoton(LoginBloc loginBloc) {
+  Widget _submitButton(
+      BuildContext context, LoginBloc loginBloc, UserBloc userBloc) {
+    final currentUser = userBloc.currentUser;
+
     return CustomRaisedButton(
         text: loginText,
         marginTop: 10,
         onPressed: () {
           if (_formKeyLogin.currentState.validate()) {
-            print("Validado");
-            _cleanTextField();
+            userBloc.signInWithEmailAndPassword(
+                context, loginBloc.email, loginBloc.password);
+
+            /*   userBloc.signInWithEmailAndPassword(context, loginBloc.email, loginBloc.password)
+                    .then((logedUser) {
+                      if(logedUser.isEmailVerified){
+                        print("Validado y verificado");
+                        _cleanTextField();
+                      }else{
+                        VerifiedShowDialog(context, "Verificar email", verificarEmail, loginPage);
+                      }
+                }).catchError((onError){
+                  VerifiedShowDialog(context, "Usuario no existe", registrarUsuario, registerPage);
+                });*/
 //            Navigator.pushReplacementNamed(context, 'homeScreen');
           } else {
             print("No validado");
@@ -139,7 +163,7 @@ class _LoginScreen extends State<LoginPage> {
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
               labelText: 'Email',
-              suffixIcon: Icon(Icons.email)),
+              prefixIcon: Icon(Icons.email)),
           onChanged: loginBloc.changeEmail,
         );
       },
@@ -152,18 +176,29 @@ class _LoginScreen extends State<LoginPage> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         return TextFormField(
           controller: _passController,
-          obscureText: true,
+          obscureText: !_isVisiblePass,
           textCapitalization: TextCapitalization.none,
           validator: _validatePassword,
           decoration: InputDecoration(
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
               labelText: 'Contraseña',
-              suffixIcon: Icon(Icons.lock)),
+              prefixIcon: Icon(Icons.lock),
+              suffixIcon: IconButton(
+                icon: Icon(
+                    _isVisiblePass ? Icons.visibility : Icons.visibility_off),
+                onPressed: _showPassword,
+              )),
           onChanged: loginBloc.changePassword,
         );
       },
     );
+  }
+
+  void _showPassword() {
+    setState(() {
+      _isVisiblePass = !_isVisiblePass;
+    });
   }
 
   Widget _buildForgotPassword() {
@@ -198,21 +233,23 @@ class _LoginScreen extends State<LoginPage> {
   String _validatePassword(String value) {
     if (value.isEmpty) {
       _passwordValidado = "Error debe rellenar el campo";
-    } else if (value.length < 6){
+    } else if (value.length < 6) {
       _passwordValidado = "Error, debe tener un tamaño mayor a 5 caracteres";
-    }else{
+    } else {
       _passwordValidado = null;
     }
     return _passwordValidado;
   }
 
   void _cleanTextField() {
-    _emailController?.clear();
-    _passController?.clear();
+    _emailController.clear();
+    _passController.clear();
   }
 
   @override
   void dispose() {
+    _emailController.dispose();
+    _passController.dispose();
     super.dispose();
   }
 }

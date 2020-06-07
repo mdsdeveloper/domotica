@@ -28,7 +28,7 @@ class TitleHeader extends StatelessWidget {
               width: 45.0,
               child: onPressed != null ? IconButton(
                   icon: Icon(Icons.arrow_back, color: Colors.white, size: 25),
-                  onPressed:  () => Navigator.of(context).pop()): null,
+                  onPressed: onPressed): null,
             ),
           ),
           Expanded(
