@@ -62,9 +62,10 @@ class FirebaseAuthAPI {
   }
 
 
-  signOut() async {
+  signOut(BuildContext context) async {
     await _auth.signOut().then((onValue) {
       print("Sesión cerrada");
+      Navigator.pushReplacementNamed(context, initPage);
     }).catchError((onError) {});
     print("Sesiones cerradas");
   }

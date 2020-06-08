@@ -129,21 +129,22 @@ class _LoginScreen extends State<LoginPage> {
         marginTop: 10,
         onPressed: () {
           if (_formKeyLogin.currentState.validate()) {
-            userBloc.signInWithEmailAndPassword(
-                context, loginBloc.email, loginBloc.password);
-
-            /*   userBloc.signInWithEmailAndPassword(context, loginBloc.email, loginBloc.password)
-                    .then((logedUser) {
-                      if(logedUser.isEmailVerified){
-                        print("Validado y verificado");
-                        _cleanTextField();
-                      }else{
-                        VerifiedShowDialog(context, "Verificar email", verificarEmail, loginPage);
-                      }
-                }).catchError((onError){
-                  VerifiedShowDialog(context, "Usuario no existe", registrarUsuario, registerPage);
-                });*/
-//            Navigator.pushReplacementNamed(context, 'homeScreen');
+            userBloc
+                .signInWithEmailAndPassword(
+                    context, loginBloc.email, loginBloc.password)
+                .then((logedUser) {
+              if (logedUser.isEmailVerified) {
+                print("Validado y verificado");
+                _cleanTextField();
+                Navigator.pushReplacementNamed(context, homePage);
+              } else {
+                VerifiedShowDialog(
+                    context, "Verificar email", verificarEmail, loginPage);
+              }
+            }).catchError((onError) {
+              VerifiedShowDialog(
+                  context, "Usuario no existe", registrarUsuario, registerPage);
+            });
           } else {
             print("No validado");
           }

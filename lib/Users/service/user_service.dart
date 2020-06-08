@@ -20,7 +20,7 @@ class UserService {
     return firebaseUser;
   }
 
-  void signOut() {
-    _firebaseAuthAPI.signOut();
+  void signOut(BuildContext context) {
+    _firebaseAuthAPI.signOut(context);
   }
 }

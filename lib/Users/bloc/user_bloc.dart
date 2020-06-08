@@ -27,7 +27,6 @@ class UserBloc {
     UserModel userModel = _buildUserModel(user);
 //    Crea el usuario en cloud firestore
     updateUserData(userModel);
-//    _cloudFirestoreRepository.updateUserDataFirestore(userModel);
     print(userModel);
     print("Email: " + userModel.email + " uid: " + userModel.uid);
   }
@@ -55,8 +54,8 @@ class UserBloc {
     return user;
   }
 //  LogOut
-  void cerrarSesion() {
-    _userService.signOut();
+  void cerrarSesion(BuildContext context) {
+    _userService.signOut(context);
   }
 
   dispose() {

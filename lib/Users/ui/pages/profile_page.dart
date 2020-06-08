@@ -49,7 +49,7 @@ class _ProfilePageState extends State<ProfilePage> {
               padding: EdgeInsets.symmetric(horizontal: 10.0),
               margin: EdgeInsets.only(top: 80, right: 10, left: 10, bottom: 10),
               child: ListView(
-                  controller: _scrollController, children: _listItem()))
+                  controller: _scrollController, children: _listItem(context)))
         ],
       ),
     );
@@ -63,7 +63,8 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  List<Widget> _listItem() {
+  List<Widget> _listItem(BuildContext context) {
+    final _userBloc = Provider.userBloc(context);
     final List<Widget> listItem = [];
     listItem..add(_photoItem())..add(Divider());
     listItem..add(ItemProfile(
@@ -82,7 +83,7 @@ class _ProfilePageState extends State<ProfilePage> {
     listItem..add(ItemProfile(
         text: "Cerrar sesión",
         iconData: Icons.exit_to_app,
-        onPressed: _cerrarSesion()
+        onPressed: () => _userBloc.cerrarSesion(context)
 
       /*() {
             Navigator.pushNamed(context, '/');
@@ -128,8 +129,4 @@ class _ProfilePageState extends State<ProfilePage> {
     _scrollController.dispose();
   }
 
-  _cerrarSesion() {
-    final _userBloc = Provider.userBloc(context);
-    _userBloc.cerrarSesion();
-  }
 }
