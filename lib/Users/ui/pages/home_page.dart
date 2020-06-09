@@ -4,6 +4,7 @@ import 'package:flutterappdomotica/Widget/custom_raised_button.dart';
 import 'package:flutterappdomotica/Widget/gradient_back.dart';
 import 'package:flutterappdomotica/Widget/title_header.dart';
 import 'package:flutterappdomotica/constants.dart';
+import 'package:flutterappdomotica/providers/provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -20,7 +21,6 @@ class _HomePageState extends State<HomePage> {
           GradientBack(height: null),
           _buildAppBarHome(),
           _createPage()
-
         ],
       ),
     );
@@ -30,7 +30,7 @@ class _HomePageState extends State<HomePage> {
     return TitleHeader(
       text: "Inicio",
       size: 20.0,
-      onPressed: (){
+      onPressed: () {
 //        Navigator.pushNamed(context, 'homeScreen');
 //        Navigator.of(context).pop();
       },
@@ -38,6 +38,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _createPage() {
+    final _userBloc = Provider.userBloc(context);
     return Container(
       alignment: Alignment.center,
       margin: EdgeInsets.only(top: 200),
@@ -46,22 +47,4 @@ class _HomePageState extends State<HomePage> {
       child: Text("Home page"),
     );
   }
-
- /* Widget logOut(BuildContext context, LoginBloc loginBloc, UserBloc userBloc) {
-
-    return CustomRaisedButton(
-        text: registerAccountText,
-        marginTop: 10,
-        onPressed: () {
-          if (_formKeyCreateAccount.currentState.validate()) {
-            _registerUser(context, loginBloc, userBloc);
-          } else {
-            print("No validado");
-          }
-        });
-  }*/
-
-
-
-
 }

@@ -1,8 +1,11 @@
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterappdomotica/Users/bloc/user_bloc.dart';
 import 'package:flutterappdomotica/Users/ui/widget/verified_show_dialog.dart';
+import 'package:flutterappdomotica/Widget/curved_navigation_bar_init.dart';
 import 'package:flutterappdomotica/Widget/custom_raised_button.dart';
 import 'package:flutterappdomotica/constants.dart';
 import 'package:flutterappdomotica/providers/provider.dart';
@@ -176,7 +179,7 @@ class _LoginScreen extends State<LoginPage> {
             children: <Widget>[
               RaisedButton(
                 child: Text(
-                  "Atras",
+                  "ATRAS",
                   style: TextStyle(
                       fontFamily: "Lato",
                       fontSize: 18.0,
@@ -195,7 +198,7 @@ class _LoginScreen extends State<LoginPage> {
               ),
               RaisedButton(
                 child: Text(
-                  "Aceptar",
+                  "ACEPTAR",
                   style: TextStyle(
                       fontFamily: "Lato",
                       fontSize: 18.0,
@@ -206,6 +209,15 @@ class _LoginScreen extends State<LoginPage> {
                     borderRadius: BorderRadius.circular(10.0)),
                 onPressed: () {
                   if (_formKeyLogin.currentState.validate()) {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Container(
+                            height: _screenHeight / 6,
+                            width: _screenWidth / 6,
+                            child: Center(child: CircularProgressIndicator()),
+                          );
+                        });
                     userBloc.sendPasswordReset(context, loginBloc.email);
                   } else {
                     print("No validado");
@@ -219,32 +231,6 @@ class _LoginScreen extends State<LoginPage> {
     );
   }
 
-  Widget _forgotButton(
-      BuildContext context, LoginBloc loginBloc, UserBloc userBloc) {
-    return CustomRaisedButton(
-        text: "Restablecer contraseña",
-        marginTop: 10,
-        onPressed: () {
-          if (_formKeyLogin.currentState.validate()) {
-            /*userBloc.signInWithEmailAndPassword(context, loginBloc.email, loginBloc.password)
-                .then((logedUser) {
-              if (logedUser.isEmailVerified) {
-                print("Validado y verificado");
-                _cleanTextField();
-                Navigator.pushReplacementNamed(context, homePage);
-              } else {
-                LoginShowDialog(
-                    context, "Verificar email", verificarEmail, loginPage);
-              }
-            });*/
-          } else {
-            print("No validado");
-          }
-          _isForgoten = false;
-          Navigator.pushReplacementNamed(context, loginPage);
-        });
-  }
-
   Widget _submitButton(
       BuildContext context, LoginBloc loginBloc, UserBloc userBloc) {
     return CustomRaisedButton(
@@ -252,7 +238,18 @@ class _LoginScreen extends State<LoginPage> {
         marginTop: 10,
         onPressed: () {
           if (_formKeyLogin.currentState.validate()) {
-            userBloc.signInWithEmailAndPassword(context, loginBloc.email, loginBloc.password)
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return Container(
+                    height: _screenHeight / 6,
+                    width: _screenWidth / 6,
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                });
+            userBloc
+                .signInWithEmailAndPassword(
+                    context, loginBloc.email, loginBloc.password)
                 .then((logedUser) {
               if (logedUser.isEmailVerified) {
                 print("Validado y verificado");
@@ -338,71 +335,6 @@ class _LoginScreen extends State<LoginPage> {
       ),
     );
   }
-
-/*  void _resetPassword(BuildContext context, LoginBloc loginBloc) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            contentPadding: EdgeInsets.only(right: 20.0, left: 20.0),
-            backgroundColor: Colors.white,
-            elevation: 10.0,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0)),
-            title: Center(child: Text("Restablecer contraseña")),
-            content:
-            Container(
-              width: 300.0,
-//              _orientation == Orientation.landscape
-//                  ? _screenWidth /2
-//                  :_screenWidth,
-
-              margin: EdgeInsets.symmetric(horizontal: 20.0),
-              padding: EdgeInsets.symmetric(vertical: 20.0),
-              child: Form(
-                child: _buildUserInput(loginBloc),
-              ),
-            ),
-            actions: [
-              FlatButton(
-                child: Text("Atras",
-                    style: TextStyle(
-                        fontFamily: fontFamilyText,
-                        fontSize: 18.0,
-                        color: Colors.blueAccent)),
-                onPressed: () => Navigator.pop(context),
-              ),
-              SizedBox(width: 70.0),
-              FlatButton(
-                  child: Text("Restablecer",
-                      style: TextStyle(
-                          fontFamily: fontFamilyText,
-                          fontSize: 18.0,
-                          color: Colors.blueAccent)),
-                  onPressed: () {
-                    if (_formKeyLogin.currentState.validate()) {
-    //                          userBloc.signInWithEmailAndPassword(context, loginBloc.email, loginBloc.password)
-    ////                              .then((logedUser) {
-    ////                            if (logedUser.isEmailVerified) {
-    ////                              print("Validado y verificado");
-    ////                              _cleanTextField();
-    ////                              Navigator.pushReplacementNamed(context, homePage);
-    ////                            } else {
-    ////                              LoginShowDialog(
-    ////                                  context, "Verificar email", verificarEmail, loginPage);
-    ////                            }
-    ////                          });
-                      print("Validado");
-                    } else {
-                      print("No validado");
-                    }
-
-                    Navigator.pushReplacementNamed(context, loginPage);
-                  })
-            ],
-          );
-        });
-  }*/
 
   String validateEmail(String value) {
     if (value.isEmpty) {

@@ -196,6 +196,15 @@ class _RegisterPageState extends State<RegisterPage> {
   _registerUser(
       BuildContext context, LoginBloc loginBloc, UserBloc userBloc) async {
     if (_isAccepted) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Container(
+              height: _screenHeight / 6,
+              width: _screenWidth / 6,
+              child: Center(child: CircularProgressIndicator()),
+            );
+          });
       _cleanTextField();
       await userBloc.createUser(context, loginBloc.email, loginBloc.password);
     } else {
