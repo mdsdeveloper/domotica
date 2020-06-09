@@ -22,9 +22,11 @@ class _LoginScreen extends State<LoginPage> {
   String _emailValidado;
   String _passwordValidado;
   bool _isVisiblePass = false;
+  bool _isForgoten = false;
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
   final _formKeyLogin = GlobalKey<FormState>();
+
   Orientation _orientation;
 
   @override
@@ -46,7 +48,7 @@ class _LoginScreen extends State<LoginPage> {
 
   Widget _buildAppBarLogin(BuildContext context) {
     return TitleHeader(
-      text: "Iniciar sesión",
+      text: !_isForgoten ? "Iniciar sesión" : "Restablecer contraseña",
       size: 20.0,
       onPressed: () => Navigator.pushReplacementNamed(context, initPage),
     );
@@ -68,50 +70,9 @@ class _LoginScreen extends State<LoginPage> {
             ),
             Form(
               key: _formKeyLogin,
-              child: Container(
-                width: _orientation == Orientation.landscape
-                    ? _screenWidth / 2
-                    : _screenWidth,
-                margin: EdgeInsets.symmetric(horizontal: 20.0),
-                padding: EdgeInsets.symmetric(vertical: 20.0),
-//              padding: EdgeInsets.only(left: 20.0, right: 20.0),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(8.0),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.black12,
-                          offset: Offset(0.0, 15.0),
-                          blurRadius: 15.0),
-                      BoxShadow(
-                          color: Colors.black12,
-                          offset: Offset(0.0, -10.0),
-                          blurRadius: 10.0)
-                    ]),
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(height: 30.0),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                      child: _buildUserInput(_loginBloc),
-                    ),
-                    Divider(),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                      child: _buildPasswordInput(_loginBloc),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                      child: _buildForgotPassword(),
-                    ),
-                    SizedBox(height: 30.0),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                      child: _submitButton(context, _loginBloc, _userBloc),
-                    )
-                  ],
-                ),
-              ),
+              child: !_isForgoten
+                  ? _buildLoginForm(_loginBloc, context, _userBloc)
+                  : _buildForgotForm(_loginBloc, context, _userBloc),
             ),
             SizedBox(height: 100.0)
           ],
@@ -120,30 +81,187 @@ class _LoginScreen extends State<LoginPage> {
     );
   }
 
-  Widget _submitButton(
-      BuildContext context, LoginBloc loginBloc, UserBloc userBloc) {
-    final currentUser = userBloc.currentUser;
+  Container _buildLoginForm(
+      LoginBloc _loginBloc, BuildContext context, UserBloc _userBloc) {
+    return Container(
+      width: _orientation == Orientation.landscape
+          ? _screenWidth / 2
+          : _screenWidth,
+      margin: EdgeInsets.symmetric(horizontal: 20.0),
+      padding: EdgeInsets.symmetric(vertical: 20.0),
+//              padding: EdgeInsets.only(left: 20.0, right: 20.0),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.0),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black12,
+                offset: Offset(0.0, 15.0),
+                blurRadius: 15.0),
+            BoxShadow(
+                color: Colors.black12,
+                offset: Offset(0.0, -10.0),
+                blurRadius: 10.0)
+          ]),
+      child: Column(
+        children: <Widget>[
+          SizedBox(height: 30.0),
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+            child: _buildUserInput(_loginBloc),
+          ),
+          Divider(),
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+            child: _buildPasswordInput(_loginBloc),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+            child: _buildForgotPassword(_loginBloc),
+          ),
+          SizedBox(height: 30.0),
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+            child: _submitButton(context, _loginBloc, _userBloc),
+          )
+        ],
+      ),
+    );
+  }
 
+  Widget _buildForgotForm(
+      LoginBloc loginBloc, BuildContext context, UserBloc userBloc) {
+    return Container(
+      width: _orientation == Orientation.landscape
+          ? _screenWidth / 2
+          : _screenWidth,
+      margin: EdgeInsets.symmetric(horizontal: 20.0),
+      padding: EdgeInsets.symmetric(vertical: 20.0),
+//              padding: EdgeInsets.only(left: 20.0, right: 20.0),
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8.0),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.black12,
+                offset: Offset(0.0, 15.0),
+                blurRadius: 15.0),
+            BoxShadow(
+                color: Colors.black12,
+                offset: Offset(0.0, -10.0),
+                blurRadius: 10.0)
+          ]),
+      child: Column(
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(right: 20.0, left: 20.0),
+            child: Center(
+              child: Text(
+                "¿Has Olvidado tu contraseña?. No se preocupes, te enviamos una nueva!",
+                style: TextStyle(
+                  fontSize: 18.0,
+                  fontFamily: fontFamilyText,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: 30.0),
+          Padding(
+            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+            child: _buildUserInput(loginBloc),
+          ),
+          SizedBox(height: 30.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              RaisedButton(
+                child: Text(
+                  "Atras",
+                  style: TextStyle(
+                      fontFamily: "Lato",
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue),
+                ),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0)),
+                onPressed: () {
+                  _isForgoten = false;
+                  Navigator.pushReplacementNamed(context, loginPage);
+                },
+              ),
+              SizedBox(
+                width: 20.0,
+              ),
+              RaisedButton(
+                child: Text(
+                  "Aceptar",
+                  style: TextStyle(
+                      fontFamily: "Lato",
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue),
+                ),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0)),
+                onPressed: () {
+                  if (_formKeyLogin.currentState.validate()) {
+                    userBloc.sendPasswordReset(context, loginBloc.email);
+                  } else {
+                    print("No validado");
+                  }
+                },
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _forgotButton(
+      BuildContext context, LoginBloc loginBloc, UserBloc userBloc) {
     return CustomRaisedButton(
-        text: loginText,
+        text: "Restablecer contraseña",
         marginTop: 10,
         onPressed: () {
           if (_formKeyLogin.currentState.validate()) {
-            userBloc
-                .signInWithEmailAndPassword(
-                    context, loginBloc.email, loginBloc.password)
+            /*userBloc.signInWithEmailAndPassword(context, loginBloc.email, loginBloc.password)
                 .then((logedUser) {
               if (logedUser.isEmailVerified) {
                 print("Validado y verificado");
                 _cleanTextField();
                 Navigator.pushReplacementNamed(context, homePage);
               } else {
-                VerifiedShowDialog(
+                LoginShowDialog(
                     context, "Verificar email", verificarEmail, loginPage);
               }
-            }).catchError((onError) {
-              VerifiedShowDialog(
-                  context, "Usuario no existe", registrarUsuario, registerPage);
+            });*/
+          } else {
+            print("No validado");
+          }
+          _isForgoten = false;
+          Navigator.pushReplacementNamed(context, loginPage);
+        });
+  }
+
+  Widget _submitButton(
+      BuildContext context, LoginBloc loginBloc, UserBloc userBloc) {
+    return CustomRaisedButton(
+        text: loginText,
+        marginTop: 10,
+        onPressed: () {
+          if (_formKeyLogin.currentState.validate()) {
+            userBloc.signInWithEmailAndPassword(context, loginBloc.email, loginBloc.password)
+                .then((logedUser) {
+              if (logedUser.isEmailVerified) {
+                print("Validado y verificado");
+                _cleanTextField();
+                Navigator.pushReplacementNamed(context, homePage);
+              } else {
+                LoginShowDialog(
+                    context, "Verificar email", verificarEmail, loginPage);
+              }
             });
           } else {
             print("No validado");
@@ -202,7 +320,7 @@ class _LoginScreen extends State<LoginPage> {
     });
   }
 
-  Widget _buildForgotPassword() {
+  Widget _buildForgotPassword(LoginBloc loginBloc) {
     return Container(
       alignment: Alignment.centerRight,
       child: FlatButton(
@@ -212,11 +330,79 @@ class _LoginScreen extends State<LoginPage> {
           style: TextStyle(color: Colors.blue),
         ),
         onPressed: () {
-          Navigator.pushNamed(context, 'forgotPasswordScreen');
+          setState(() {
+            _isForgoten = true;
+          });
+//          _resetPassword(context, loginBloc);
         },
       ),
     );
   }
+
+/*  void _resetPassword(BuildContext context, LoginBloc loginBloc) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            contentPadding: EdgeInsets.only(right: 20.0, left: 20.0),
+            backgroundColor: Colors.white,
+            elevation: 10.0,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)),
+            title: Center(child: Text("Restablecer contraseña")),
+            content:
+            Container(
+              width: 300.0,
+//              _orientation == Orientation.landscape
+//                  ? _screenWidth /2
+//                  :_screenWidth,
+
+              margin: EdgeInsets.symmetric(horizontal: 20.0),
+              padding: EdgeInsets.symmetric(vertical: 20.0),
+              child: Form(
+                child: _buildUserInput(loginBloc),
+              ),
+            ),
+            actions: [
+              FlatButton(
+                child: Text("Atras",
+                    style: TextStyle(
+                        fontFamily: fontFamilyText,
+                        fontSize: 18.0,
+                        color: Colors.blueAccent)),
+                onPressed: () => Navigator.pop(context),
+              ),
+              SizedBox(width: 70.0),
+              FlatButton(
+                  child: Text("Restablecer",
+                      style: TextStyle(
+                          fontFamily: fontFamilyText,
+                          fontSize: 18.0,
+                          color: Colors.blueAccent)),
+                  onPressed: () {
+                    if (_formKeyLogin.currentState.validate()) {
+    //                          userBloc.signInWithEmailAndPassword(context, loginBloc.email, loginBloc.password)
+    ////                              .then((logedUser) {
+    ////                            if (logedUser.isEmailVerified) {
+    ////                              print("Validado y verificado");
+    ////                              _cleanTextField();
+    ////                              Navigator.pushReplacementNamed(context, homePage);
+    ////                            } else {
+    ////                              LoginShowDialog(
+    ////                                  context, "Verificar email", verificarEmail, loginPage);
+    ////                            }
+    ////                          });
+                      print("Validado");
+                    } else {
+                      print("No validado");
+                    }
+
+                    Navigator.pushReplacementNamed(context, loginPage);
+                  })
+            ],
+          );
+        });
+  }*/
 
   String validateEmail(String value) {
     if (value.isEmpty) {

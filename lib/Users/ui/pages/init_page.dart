@@ -30,19 +30,16 @@ class _InitPageState extends State<InitPage> {
 
 
   Widget _handleCurrentSession(BuildContext context, UserBloc userBloc) {
-    print(userBloc.currentUser);
-//    return signIn(context);
+    var isVerified = false;
+    userBloc.currentUser.then((user) {isVerified = user.isEmailVerified;});
    return StreamBuilder(
       stream: userBloc.authStatus,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         // snapshot contiene los datos del usuario
-        print(snapshot);
-        print("El usuario es: " + snapshot.data.toString());
-        if (!snapshot.hasData || snapshot.hasError) {
+        if (!snapshot.hasData || snapshot.hasError || !isVerified) {
           return signIn(context);
         } else {
-//          Navigator.pushReplacementNamed(context, 'homeScreen');
-          return CurvedNavigationBarInit();
+          return CurvedNavigationBarInit() ;
         }
       },
     );

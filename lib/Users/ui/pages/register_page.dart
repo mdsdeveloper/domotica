@@ -181,7 +181,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Widget _crearBoton(
       BuildContext context, LoginBloc loginBloc, UserBloc userBloc) {
-
     return CustomRaisedButton(
         text: registerAccountText,
         marginTop: 10,
@@ -198,8 +197,7 @@ class _RegisterPageState extends State<RegisterPage> {
       BuildContext context, LoginBloc loginBloc, UserBloc userBloc) async {
     if (_isAccepted) {
       _cleanTextField();
-      FirebaseUser firebaseUser = await userBloc.createUser(
-          context, loginBloc.email, loginBloc.password);
+      await userBloc.createUser(context, loginBloc.email, loginBloc.password);
     } else {
       _needAccepted = !_isAccepted;
       _changeForm();

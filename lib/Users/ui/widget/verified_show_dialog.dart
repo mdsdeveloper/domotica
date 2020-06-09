@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutterappdomotica/constants.dart';
 
-Future VerifiedShowDialog(BuildContext context, String title, String message, String goToPage) {
+Future LoginShowDialog(BuildContext context, String title, String message, String goToPage) {
   return showDialog(
       context: context,
       builder: (BuildContext context) {

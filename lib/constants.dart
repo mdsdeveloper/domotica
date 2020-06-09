@@ -37,7 +37,10 @@ const registerAccountText    = "Crear cuenta";
 const String fontFamilyText = 'Lato';
 
 // Textos
-const usuarioExiste    = "Este usuario ya está registrado";
-const verificarEmail   = "Te hemos enviado un email de verificación";
-const registrarUsuario = "El usuario no existe, por favor registre el usuario";
+const usuarioExiste        = "Este usuario ya está registrado";
+const verificarEmail       = "Te hemos enviado un email de verificación";
+const resetPassword        = "Te hemos enviado un email para reestablecer la contraseña";
+const resetPasswordError   = "Error al enviar el email, el usuario no existe";
+const registrarUsuario     = "El usuario no existe, por favor registre el usuario";
+const loginError           = "El Usuario o la contraseña son incorrectos";
 

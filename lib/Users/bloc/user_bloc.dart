@@ -58,7 +58,13 @@ class UserBloc {
     _userService.signOut(context);
   }
 
+//  Resend password
+  void sendPasswordReset(BuildContext context, String email) {
+    _userService.sendPasswordReset(context, email);
+  }
   dispose() {
     _userController?.close();
   }
+
+
 }

@@ -23,4 +23,8 @@ class UserService {
   void signOut(BuildContext context) {
     _firebaseAuthAPI.signOut(context);
   }
+
+  void sendPasswordReset(BuildContext context, String email) {
+    _firebaseAuthAPI.sendPasswordReset(context, email);
+  }
 }

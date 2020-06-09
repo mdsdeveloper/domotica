@@ -14,34 +14,9 @@ class FirebaseAuthAPI {
     FirebaseUser authResult = await _auth
         .createUserWithEmailAndPassword(email: email, password: password)
         .then((value) {
-      print("Registro ok");
       _verificarEmail(context);
-//      return value.user;
     }).catchError((onError) {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              backgroundColor: Colors.white,
-              elevation: 10.0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0)),
-              title: Center(child: Text("Error")),
-              content: Text(usuarioExiste,
-                  style: TextStyle(fontFamily: fontFamilyText, fontSize: 18.0)),
-              actions: [
-                FlatButton(
-                  child: Text("Ok",
-                      style: TextStyle(
-                          fontFamily: fontFamilyText,
-                          fontSize: 18.0,
-                          color: Colors.blueAccent)),
-                  onPressed: () =>
-                      Navigator.pushReplacementNamed(context, loginPage),
-                )
-              ],
-            );
-          });
+      LoginShowDialog(context, "Error", usuarioExiste, loginPage);
     });
     return authResult;
   }
@@ -53,14 +28,13 @@ class FirebaseAuthAPI {
     user.then((userCurrent) {
       userCurrent.sendEmailVerification().then((value) {
         print("Enviando email");
-        VerifiedShowDialog(context, "Verificar email", verificarEmail, loginPage);
+        LoginShowDialog(context, "Verificar email", verificarEmail, initPage);
       }).catchError((onError) {
         print(
             "Error: ha habido un error en el envío del email para verificar.");
       });
     });
   }
-
 
   signOut(BuildContext context) async {
     await _auth.signOut().then((onValue) {
@@ -78,10 +52,31 @@ class FirebaseAuthAPI {
       print("Iniciando sessión");
       return user;
     }).catchError((onError) {
+      var typeError = onError;
+      print(typeError);
+      // Handle Errors here.
+      var errorMessage = onError.message;
+      if (onError.code == 'ERROR_WRONG_PASSWORD') {
+        print("Password erroneo" + errorMessage + onError.code);
+        LoginShowDialog(context, "Error", loginError, loginPage);
+      } else {
+        LoginShowDialog(
+            context, "Usuario no existe", registrarUsuario, registerPage);
+      }
       print("Error al iniciar sessión");
-      return null;
+      return onError;
     });
 
     return authResult.user;
+  }
+
+  void sendPasswordReset(BuildContext context, String email) {
+    _auth
+        .sendPasswordResetEmail(email: email)
+        .then((value) => LoginShowDialog(
+            context, "Verificar email", resetPassword, initPage))
+        .catchError((onError){
+      LoginShowDialog(context, "Error", resetPasswordError, loginPage);
+    });
   }
 }
