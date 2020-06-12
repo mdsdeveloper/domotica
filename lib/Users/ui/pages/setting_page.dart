@@ -1,16 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterappdomotica/Rooms/ui/screens/profile_screen.dart';
 import 'package:flutterappdomotica/Users/ui/widget/item_profile.dart';
 import 'package:flutterappdomotica/Widget/gradient_back.dart';
 import 'package:flutterappdomotica/Widget/title_header.dart';
 
-class SettingScreen extends StatefulWidget {
+class SettingPage extends StatefulWidget {
   @override
-  _SettingScreenState createState() => _SettingScreenState();
+  _SettingPageState createState() => _SettingPageState();
 }
 
-class _SettingScreenState extends State<SettingScreen> {
+class _SettingPageState extends State<SettingPage> {
   double screenWidth;
   double screenHeight;
 
