@@ -1,47 +1,34 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutterappdomotica/Rooms/bloc/room_bloc.dart';
-import 'package:flutterappdomotica/Rooms/bloc/rooms_bloc.dart';
-import 'package:flutterappdomotica/Rooms/model/device.dart';
-import 'package:flutterappdomotica/Rooms/model/new_device.dart';
-import 'package:flutterappdomotica/Rooms/model/new_room.dart';
-import 'package:flutterappdomotica/Rooms/model/room.dart';
-import 'package:flutterappdomotica/Rooms/model/rooms.dart';
-import 'package:flutterappdomotica/Rooms/ui/screens/home_screen.dart';
-import 'package:flutterappdomotica/Rooms/ui/widget/card_room.dart';
-import 'package:flutterappdomotica/Rooms/ui/widget/card_room_new.dart';
-import 'package:flutterappdomotica/Rooms/ui/widget/room_widget.dart';
 import 'package:flutterappdomotica/Widget/custom_raised_button.dart';
 import 'package:flutterappdomotica/Widget/gradient_back.dart';
 import 'package:flutterappdomotica/Widget/title_header.dart';
 import 'package:flutterappdomotica/constants.dart';
-import 'package:flutterappdomotica/enumRoom.dart';
 import 'package:flutterappdomotica/providers/provider.dart';
-import 'package:flutterappdomotica/utils/key_value.dart';
 
-class RoomsScreen extends StatefulWidget {
+class RoomsPage extends StatefulWidget {
   @override
-  _RoomsScreenState createState() => _RoomsScreenState();
+  _RoomsPageState createState() => _RoomsPageState();
 }
 
-class _RoomsScreenState extends State<RoomsScreen> {
+class _RoomsPageState extends State<RoomsPage> {
   final _textFieldRoomController = TextEditingController();
-  Rooms rooms;
+/*  Rooms rooms;
   Room room;
   RoomModel roomModel;
   var _selected;
   Icon _iconSelected;
   RoomBloc roomBloc;
   RoomsBloc roomsBloc;
-  List<CardRoomNew> newCardList;
+  List<CardRoomNew> newCardList;*/
 
   @override
   Widget build(BuildContext context) {
-    roomBloc = Provider.roomBloc(context);
+  /*  roomBloc = Provider.roomBloc(context);
    roomsBloc = Provider.roomsBloc(context);
     if(newCardList == null){
       newCardList = new List<CardRoomNew>();
-    }
+    }*/
 
     return Scaffold(
       body: Stack(
@@ -59,7 +46,7 @@ class _RoomsScreenState extends State<RoomsScreen> {
         hoverElevation: 30,
         child: Icon(Icons.add, size: 30),
         onPressed: (){
-          _mostrarAlerta(context);
+//          _mostrarAlerta(context);
         },
       ),
     );
@@ -80,7 +67,7 @@ class _RoomsScreenState extends State<RoomsScreen> {
         child: CustomRaisedButton(
           text: "Añadir habitación",
           onPressed: () {
-            _mostrarAlerta(context);
+//            _mostrarAlerta(context);
           },
           marginBottom: 0.0,
           color: Colors.grey,
@@ -108,11 +95,15 @@ class _RoomsScreenState extends State<RoomsScreen> {
       padding: EdgeInsets.only(top: 5.0, left: 5.0, right: 5.0),
       child: GridView.count(
           crossAxisCount: 3,
-          children: roomList == null ? _gridViewEmpty() : _gridViewFiled()),
+          children: /*roomList == null ?*/ _gridViewEmpty() /*: _gridViewFiled()*/),
     );
   }
 
-  void _mostrarAlerta(BuildContext context) {
+  List<Widget> _gridViewEmpty() {
+    return <Widget>[];
+  }
+
+/*  void _mostrarAlerta(BuildContext context) {
     showDialog(
       context: context,
       useRootNavigator: true,
@@ -172,9 +163,9 @@ class _RoomsScreenState extends State<RoomsScreen> {
         );
       },
     );
-  }
+  }*/
 
-  void _addRoomOnList() {
+/*  void _addRoomOnList() {
     room = Room();
     roomModel = RoomModel();
     rooms = Rooms();
@@ -202,9 +193,9 @@ class _RoomsScreenState extends State<RoomsScreen> {
     roomsBloc.agregarRoom(roomModel);
     idRoom++;
     clear();
-  }
+  }*/
 
-  Widget _dropDownList() {
+/*  Widget _dropDownList() {
     return DropdownButton<EnumRoom>(
       icon: Container(
         child: Icon(Icons.arrow_drop_down),
@@ -241,25 +232,23 @@ class _RoomsScreenState extends State<RoomsScreen> {
         );
       }).toList(),
     );
-  }
+  }*/
 
-  List<Widget> _gridViewEmpty() {
-    return <Widget>[];
-  }
 
-  List<Widget> _gridViewFiled() {
+
+/*  List<Widget> _gridViewFiled() {
     cardList.sort((a, b) => a.room.id.compareTo(b.room.id));
     return cardList != null ? cardList.toList() : [];
-  }
+  }*/
 
   void _cleanTextField() {
     _textFieldRoomController.clear();
-    _iconSelected = null;
+//    _iconSelected = null;
   }
 
   void clear() {
     _textFieldRoomController.clear();
-    room = new Room();
+//    room = new Room();
   }
 
   @override
