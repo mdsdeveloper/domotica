@@ -19,6 +19,8 @@ const String policyPage    = 'policyPage';
 const String termsPage     = 'termsPage';
 const String homePage      = 'homePage';
 const String profilePage   = 'profilePage';
+const String roomsPage     = 'roomsPage';
+const String settingPage   = 'settingPage';
 
 // Textos de botones
 
