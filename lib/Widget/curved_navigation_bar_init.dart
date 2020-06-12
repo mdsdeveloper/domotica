@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:flutterappdomotica/Rooms/ui/pages/rooms_page.dart';
 import 'package:flutterappdomotica/Users/ui/pages/home_page.dart';
 import 'package:flutterappdomotica/Users/ui/pages/profile_page.dart';
+import 'package:flutterappdomotica/Users/ui/pages/setting_page.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CurvedNavigationBarInit extends StatefulWidget {
@@ -19,9 +21,9 @@ class CurvedNavigationBarInitState extends State<CurvedNavigationBarInit> {
 
   var _widgetsChildren = [
     HomePage(),
-//    RoomsScreen(),
+    RoomsPage(),
     ProfilePage(),
-//    SettingScreen(),
+    SettingPage(),
   ];
 
   @override
@@ -42,7 +44,7 @@ class CurvedNavigationBarInitState extends State<CurvedNavigationBarInit> {
 
   Widget _buildCurvedNavigationBar() {
     return Container(
-      height: 60.0,
+      height: 65.0,
       child: CurvedNavigationBar(
         key: navigatorKey,
         index: _selectedItem,
