@@ -45,4 +45,5 @@ const resetPassword        = "Te hemos enviado un email para reestablecer la con
 const resetPasswordError   = "Error al enviar el email, el usuario no existe";
 const registrarUsuario     = "El usuario no existe, por favor registre el usuario";
 const loginError           = "El Usuario o la contraseña son incorrectos";
+const roomsErrorGetRooms   = "Ha ocurrido un error al traer todas las habitaciones";
 
