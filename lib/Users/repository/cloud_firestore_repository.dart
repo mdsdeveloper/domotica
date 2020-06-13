@@ -6,4 +6,6 @@ class CloudFirestoreRepository {
   final _cloudFirestoreAPI = CloudFirestoreAPI();
 
   void updateUserDataFirestore(UserModel user) => _cloudFirestoreAPI.updateUserData(user);
+
+  getAllRooms() => _cloudFirestoreAPI.getAllRooms();
 }
