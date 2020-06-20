@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterappdomotica/Rooms/model/my_room.dart';
 
@@ -48,4 +49,12 @@ class RoomModel {
 //    "myrooms": List<dynamic>.from(myrooms.map((x) => x.toJson())),
 //    "Device": List<dynamic>.from(device.map((x) => x.toJson())),
   };
+
+   RoomModel.fromDocumentSnapshot(document) {
+    uid         = document["uid"];
+    name        = document["name"];
+    nickName    = document["nickName"];
+    icon        = document["icon"];
+    uriImage    = document["uriImage"];
+  }
 }

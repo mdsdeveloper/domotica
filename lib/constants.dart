@@ -12,15 +12,16 @@ const String pathBombillaApagada     = "assets/images/bombilla-apagada.png";
 
 // nombre de páginas
 
-const String registerPage  = 'registerPage';
-const String loginPage     = 'loginPage';
-const String initPage      = '/';
-const String policyPage    = 'policyPage';
-const String termsPage     = 'termsPage';
-const String homePage      = 'homePage';
-const String profilePage   = 'profilePage';
-const String roomsPage     = 'roomsPage';
-const String settingPage   = 'settingPage';
+const String registerPage      = 'registerPage';
+const String loginPage         = 'loginPage';
+const String initPage          = '/';
+const String policyPage        = 'policyPage';
+const String termsPage         = 'termsPage';
+const String homePage          = 'homePage';
+const String profilePage       = 'profilePage';
+const String roomsPage         = 'roomsPage';
+const String settingPage       = 'settingPage';
+const String roomDetailsPage   = 'RoomDetailsPage';
 
 // Textos de botones
 
@@ -44,6 +45,6 @@ const verificarEmail       = "Te hemos enviado un email de verificación";
 const resetPassword        = "Te hemos enviado un email para reestablecer la contraseña";
 const resetPasswordError   = "Error al enviar el email, el usuario no existe";
 const registrarUsuario     = "El usuario no existe, por favor registre el usuario";
-const loginError           = "El Usuario o la contraseña son incorrectos";
+const loginError           = "El usuario o la contraseña son incorrectos";
 const roomsErrorGetRooms   = "Ha ocurrido un error al traer todas las habitaciones";
 

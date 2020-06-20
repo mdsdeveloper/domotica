@@ -356,7 +356,8 @@ class _RoomsPageState extends State<RoomsPage> {
   cardRoomWidget(document) {
     return InkWell(
       onTap: () {
-
+        var roomModel = RoomModel.fromDocumentSnapshot(document);
+        Navigator.pushNamed(context, roomDetailsPage, arguments: roomModel);
       },
       child: Hero(
         tag: document['uid'],

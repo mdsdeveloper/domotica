@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutterappdomotica/Rooms/ui/pages/room_details_page.dart';
 import 'package:flutterappdomotica/Rooms/ui/pages/rooms_page.dart';
-import 'package:flutterappdomotica/Users/ui/pages/home_page.dart';
 import 'package:flutterappdomotica/Users/ui/pages/policy_page.dart';
 import 'package:flutterappdomotica/Users/ui/pages/profile_page.dart';
 import 'package:flutterappdomotica/Users/ui/pages/register_page.dart';
@@ -13,19 +13,15 @@ import 'package:flutterappdomotica/constants.dart';
 
 Map<String, WidgetBuilder> getApplicationRoutes() {
   return <String, WidgetBuilder>{
-    initPage      : (BuildContext context) => InitPage(),
-    loginPage     : (BuildContext context) => LoginPage(),
-    registerPage  : (BuildContext context) => RegisterPage(),
-    policyPage    : (BuildContext context) => PolicyPage(),
-    termsPage     : (BuildContext context) => TermsPage(),
-    homePage      : (BuildContext context) => CurvedNavigationBarInit(),
-    profilePage   : (BuildContext context) => ProfilePage(),
-    roomsPage     : (BuildContext context) => RoomsPage(),
-    settingPage   : (BuildContext context) => SettingPage(),
-
-//    'forgotPasswordScreen': (BuildContext context) => ForgotPassword(),
-//    'homePage': (BuildContext context) => CurvedNavigationBarInit(),
-//    'roomDetailsScreen': (BuildContext context) => RoomDetailsScreen(),
+    initPage          : (BuildContext context) => InitPage(),
+    loginPage         : (BuildContext context) => LoginPage(),
+    registerPage      : (BuildContext context) => RegisterPage(),
+    policyPage        : (BuildContext context) => PolicyPage(),
+    termsPage         : (BuildContext context) => TermsPage(),
+    homePage          : (BuildContext context) => CurvedNavigationBarInit(),
+    profilePage       : (BuildContext context) => ProfilePage(),
+    roomsPage         : (BuildContext context) => RoomsPage(),
+    settingPage       : (BuildContext context) => SettingPage(),
+    roomDetailsPage   : (BuildContext context) => RoomDetailsPage(),
   };
 }
-
