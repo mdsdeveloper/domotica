@@ -3,25 +3,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutterappdomotica/custom_icons.dart';
 
-IconData iconFromRoom(String roomName){
+IconData IconFromIconName(String roomName){
   switch(roomName){
-    case "Salón"          : return CustomIcons.sofa;
-    case "Comedor"        : return CustomIcons.comedor;
-    case "Cocina"         : return CustomIcons.cocina;
-    case "Dormitorio"     : return CustomIcons.cama;
-    case "Baño"           : return CustomIcons.bano;
-    case "Lavabo"         : return CustomIcons.ducha;
-    case "SalaEstar"      : return CustomIcons.sala_estar;
-    case "Despacho"       : return CustomIcons.despacho;
-    case "Estudio"        : return CustomIcons.estudio;
-    case "SalaJuegos"     : return CustomIcons.sala_juegos;
-    case "Jardin"         : return CustomIcons.jardin;
-    case "PatioTrasero"   : return CustomIcons.patio_delantero;
-    case "PatioDelantero" : return CustomIcons.patio_delantero;
-    case "Garage"         : return CustomIcons.garaje;
-    case "Balcon"         : return CustomIcons.balcon;
-    case "Atico"          : return CustomIcons.terraza;
-    case "Escalera"       : return CustomIcons.escalera;
+    case "CustomIcons.sofa"           : return CustomIcons.sofa;
+    case "CustomIcons.comedor"        : return CustomIcons.comedor;
+    case "CustomIcons.cocina"         : return CustomIcons.cocina;
+    case "CustomIcons.cama"           : return CustomIcons.cama;
+    case "CustomIcons.bano"           : return CustomIcons.bano;
+    case "CustomIcons.ducha"          : return CustomIcons.ducha;
+    case "CustomIcons.sala_estar"     : return CustomIcons.sala_estar;
+    case "CustomIcons.despacho"       : return CustomIcons.despacho;
+    case "CustomIcons.estudio"        : return CustomIcons.estudio;
+    case "CustomIcons.sala_juegos"    : return CustomIcons.sala_juegos;
+    case "CustomIcons.jardin"         : return CustomIcons.jardin;
+    case "CustomIcons.patio_delantero": return CustomIcons.patio_delantero;
+    case "CustomIcons.patio_delantero": return CustomIcons.patio_delantero;
+    case "CustomIcons.garaje"         : return CustomIcons.garaje;
+    case "CustomIcons.balcon"         : return CustomIcons.balcon;
+    case "CustomIcons.terraza"        : return CustomIcons.terraza;
+    case "CustomIcons.escalera"       : return CustomIcons.escalera;
     default: return Icons.linear_scale;
   }
 }

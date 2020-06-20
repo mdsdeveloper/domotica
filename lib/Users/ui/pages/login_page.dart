@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterappdomotica/Rooms/bloc/rooms_bloc.dart';
 import 'package:flutterappdomotica/Users/bloc/user_bloc.dart';
 import 'package:flutterappdomotica/Users/ui/widget/verified_show_dialog.dart';
 import 'package:flutterappdomotica/Widget/curved_navigation_bar_init.dart';
@@ -59,7 +60,8 @@ class _LoginScreen extends State<LoginPage> {
 
   Widget _loginForm(BuildContext context) {
     final _loginBloc = Provider.loginBloc(context);
-    final _userBloc = Provider.userBloc(context);
+    final _userBloc  = Provider.userBloc(context);
+
 
     return Container(
       margin: EdgeInsets.only(top: 90),
@@ -247,9 +249,7 @@ class _LoginScreen extends State<LoginPage> {
                     child: Center(child: CircularProgressIndicator()),
                   );
                 });
-            userBloc
-                .signInWithEmailAndPassword(
-                    context, loginBloc.email, loginBloc.password)
+            userBloc.signInWithEmailAndPassword(context, loginBloc.email, loginBloc.password)
                 .then((logedUser) {
               if (logedUser.isEmailVerified) {
                 print("Validado y verificado");
