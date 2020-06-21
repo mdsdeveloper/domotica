@@ -18,7 +18,7 @@ class RoomModel {
   String nickName;
   String icon;
   String uriImage;
-  List<Myroom> myrooms;
+//  List<Myroom> myrooms;
 //  List<Device> device;
   RoomModel({
     this.uid,
@@ -50,11 +50,4 @@ class RoomModel {
 //    "Device": List<dynamic>.from(device.map((x) => x.toJson())),
   };
 
-   RoomModel.fromDocumentSnapshot(document) {
-    uid         = document["uid"];
-    name        = document["name"];
-    nickName    = document["nickName"];
-    icon        = document["icon"];
-    uriImage    = document["uriImage"];
-  }
 }

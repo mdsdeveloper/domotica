@@ -12,7 +12,7 @@ class RoomsBloc {
 
   final _roomsController = BehaviorSubject<String>();
 
-  final _roomsModelController = BehaviorSubject<RoomModel>();
+  final _roomModelController = BehaviorSubject<RoomModel>();
 
   final _iconController = BehaviorSubject<Icon>();
 
@@ -26,7 +26,7 @@ class RoomsBloc {
 
   Stream<String> get roomsStream => _roomsController.stream;
 
-  Stream<RoomModel> get roomsModelStream => _roomsModelController.stream;
+  Stream<RoomModel> get roomsModelStream => _roomModelController.stream;
 
   void addRoomToUserFirestore(userId, roomsId, RoomModel roomModel) {
     _cloudFirestoreRepository.addRoomToUserFirestore(userId, roomsId, roomModel);
@@ -36,10 +36,10 @@ class RoomsBloc {
   dispose() {
     _iconController?.close();
     _roomsController?.close();
-    _roomsModelController?.close();
+    _roomModelController?.close();
   }
 
   void addRoomModel(RoomModel roomModel) {
-    _roomsModelController.sink.add(roomModel);
+    _roomModelController.sink.add(roomModel);
   }
 }

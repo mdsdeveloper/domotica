@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterappdomotica/Rooms/bloc/rooms_bloc.dart';
+import 'package:flutterappdomotica/Rooms/model/my_room.dart';
 import 'package:flutterappdomotica/Rooms/model/room_model.dart';
 import 'package:flutterappdomotica/Users/bloc/user_bloc.dart';
 import 'package:flutterappdomotica/Users/ui/widget/verified_show_dialog.dart';
@@ -84,7 +85,33 @@ class _RoomsPageState extends State<RoomsPage> {
           _currentuser = snapshot.data;
           return _addGridView(_roomsBloc, _userBloc, allMyRoomsListStream);
         } else if (!snapshot.hasError) {
+//          TODO: mejorar este return
           return CircularProgressIndicator();
+        } else {
+          return null;
+        }
+      },
+    );
+  }
+
+  _addGridView(RoomsBloc roomsBloc, UserBloc userBloc, Stream<QuerySnapshot> allMyRoomsListStream) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: allMyRoomsListStream,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (!snapshot.hasError) {
+          return Container(
+            margin: EdgeInsets.only(top: 80, bottom: 10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Expanded(
+                  child: _gridView(snapshot, roomsBloc),
+                )
+              ],
+            ),
+          );
         } else {
           return null;
         }
@@ -304,31 +331,6 @@ class _RoomsPageState extends State<RoomsPage> {
     return roomModel;
   }
 
-  _addGridView(RoomsBloc roomsBloc, UserBloc userBloc, Stream<QuerySnapshot> allMyRoomsListStream) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: allMyRoomsListStream,
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (!snapshot.hasError) {
-          return Container(
-            margin: EdgeInsets.only(top: 80, bottom: 10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Expanded(
-                  child: _gridView(snapshot, roomsBloc),
-                )
-              ],
-            ),
-          );
-        } else {
-          return null;
-        }
-      },
-    );
-  }
-
   Widget _gridView(AsyncSnapshot<dynamic> snapshot, RoomsBloc roomsBloc) {
     if (!snapshot.hasData && snapshot.data == null) {
       return Center(child: CircularProgressIndicator());
@@ -354,13 +356,13 @@ class _RoomsPageState extends State<RoomsPage> {
   }
 
   cardRoomWidget(document) {
+    var myRoom = MyRoom.fromDocumentSnapshot(document);
     return InkWell(
       onTap: () {
-        var roomModel = RoomModel.fromDocumentSnapshot(document);
-        Navigator.pushNamed(context, roomDetailsPage, arguments: roomModel);
+        Navigator.pushNamed(context, roomDetailsPage, arguments: myRoom);
       },
       child: Hero(
-        tag: document['uid'],
+        tag: myRoom.uid,
         child: Card(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
           color: Colors.white,
@@ -373,12 +375,12 @@ class _RoomsPageState extends State<RoomsPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Flexible(
-                    child: _showImage(document),
+                    child: _showImage(myRoom),
                   ),
                   Container(
 //                padding: EdgeInsets.all(10.0),
                     child: Text(
-                      _addNameRoom(document['name']),
+                      _addNameRoom(myRoom.name),
                       softWrap: true,
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.clip,
@@ -396,18 +398,18 @@ class _RoomsPageState extends State<RoomsPage> {
 
   String _addNameRoom(String name) => name.isNotEmpty ? name : "Habitación";
 
-  Widget _showImage(document) {
+  Widget _showImage(MyRoom myroom) {
     Widget dev;
-    if (document['icon'].isNotEmpty) {
-      if (document['uriImage'].isNotEmpty) {
+    if (myroom.icon.isNotEmpty) {
+      if (myroom.uriImage.isNotEmpty) {
         dev = ClipRRect(
             borderRadius: BorderRadius.circular(10.0),
             child: FadeInImage(
-              placeholder: AssetImage(getAssetImage(document)),
-              image: AssetImage(getAssetImage(document)),
+              placeholder: AssetImage(getAssetImage(myroom)),
+              image: AssetImage(getAssetImage(myroom)),
             ));
       } else {
-        dev = getIconRoom(document);
+        dev = getIconRoom(myroom);
       }
     } else {
       dev = Container(
@@ -421,15 +423,15 @@ class _RoomsPageState extends State<RoomsPage> {
     return dev;
   }
 
-  Icon getIconRoom(document) {
+  Icon getIconRoom(MyRoom myroom) {
     return Icon(
-      IconFromIconName(document['icon'].toString()),
+      IconFromIconName(myroom.icon),
       size: 50,
       color: Colors.black,
     );
   }
 
-  getAssetImage(document) {
-    return document['uriImage'].isNotEmpty() ? document['uriImage'] : pathSofa;
+  getAssetImage(MyRoom myroom) {
+    return myroom.uriImage.isNotEmpty ? myroom.uriImage : pathSofa;
   }
 }

@@ -1,14 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutterappdomotica/Rooms/bloc/rooms_bloc.dart';
+import 'package:flutterappdomotica/Rooms/model/my_room.dart';
 import 'package:flutterappdomotica/Rooms/model/room_model.dart';
 import 'package:flutterappdomotica/Rooms/ui/widget/card_room.dart';
+import 'package:flutterappdomotica/Users/bloc/user_bloc.dart';
 import 'package:flutterappdomotica/Widget/custom_raised_button.dart';
 import 'package:flutterappdomotica/Widget/gradient_back.dart';
 import 'package:flutterappdomotica/Widget/title_header.dart';
 import 'package:flutterappdomotica/constants.dart';
+import 'package:flutterappdomotica/providers/provider.dart';
+import 'package:flutterappdomotica/utils/util_icon.dart';
 
 class RoomDetailsPage extends StatefulWidget {
   @override
@@ -16,22 +23,22 @@ class RoomDetailsPage extends StatefulWidget {
 }
 
 class _RoomDetailsPageState extends State<RoomDetailsPage> {
-  RoomModel _roomModel;
+  MyRoom _myroom;
+  FirebaseUser _currentuser;
   final TextEditingController _nameController = TextEditingController();
   final ScrollController _controllerListView = ScrollController();
   final FocusNode focusNode = FocusNode();
   final FocusScopeNode focusScopeNode = FocusScopeNode();
-  TextStyle textStyle = TextStyle();
-
+  final TextStyle textStyle = TextStyle();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   bool isOn = false;
   bool editClicking = false;
+  bool _isPressedDelete = false;
+  bool _checkSelected = false;
   double screenWidth;
   double screenHeight;
 
 //  Device device;
-  var _isPressedDelete = false;
-  var _checkSelected = false;
 
   @override
   void initState() {
@@ -48,8 +55,11 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
   @override
   Widget build(BuildContext context) {
     final roomData = ModalRoute.of(context).settings.arguments;
+    final _roomBloc = Provider.roomsBloc(context);
+    final _userBloc = Provider.userBloc(context);
+
     if (roomData != null) {
-      _roomModel = roomData;
+      _myroom = roomData;
     }
     double withDrawer = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
@@ -87,7 +97,7 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
                     }),
               ]
             : <Widget>[
-                IconButton(
+                /* IconButton(
                     icon: !editClicking ? Icon(Icons.edit) : Icon(Icons.save),
                     onPressed: () {
                       if (editClicking) {
@@ -97,7 +107,7 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
                       setState(() {
                         editClicking = !editClicking;
                       });
-                    }),
+                    }),*/
                 IconButton(icon: Icon(Icons.menu, size: 30.0), onPressed: () => _scaffoldKey.currentState.openEndDrawer()),
               ],
       ),
@@ -110,8 +120,8 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
       ),
       body: Stack(
         children: <Widget>[
-          Hero(tag: _roomModel.uid, child: GradientBack(height: null)),
-          _buildListView(),
+          Hero(tag: _myroom.uid, child: GradientBack(height: null)),
+//          _buildListViewDevices(_roomBloc, _userBloc, context),
         ],
       ),
     );
@@ -122,7 +132,7 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
       alignment: _isPressedDelete ? Alignment.center : Alignment.centerLeft,
       child: !editClicking
           ? Text(
-              _roomModel != null && _roomModel.name.isNotEmpty ? _roomModel.name : "Habitación",
+              _myroom.nickName != null && _myroom.nickName.isNotEmpty ? _myroom.nickName : _myroom.name,
             )
           : EditableText(
               textInputAction: TextInputAction.newline,
@@ -142,7 +152,64 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
     );
   }
 
-  Widget _buildListView() {
+/*
+  FutureBuilder _buildListViewDevices(RoomsBloc _roomsBloc, UserBloc _userBloc, BuildContext context) {
+    return FutureBuilder(
+      future: _userBloc.currentUser,
+      builder: (context, snapshot) {
+        if (!snapshot.hasError && snapshot.hasData) {
+//          var allMyRoomsListStream = _roomsBloc.allMyRoomsListStream(snapshot.data);
+//          _currentuser = snapshot.data;
+          return _createListViewDevices(_roomsBloc, _userBloc, allMyRoomsListStream);
+        } else if (!snapshot.hasError) {
+//          TODO:  mejorar este return
+          return CircularProgressIndicator();
+        } else {
+//          TODO:  mejorar este return
+          return null;
+        }
+      },
+    );
+  }
+*/
+
+/*  _createListViewDevices(DevicesBloc devicesBloc) {
+    return StreamBuilder(
+      stream: devicesBloc.allDevicesListStream,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasError) {
+//          TODO: mejorar este return
+          return null;
+        } else {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+            case ConnectionState.none:
+              return CircularProgressIndicator();
+            case ConnectionState.active:
+            case ConnectionState.done:
+            default:
+              final devices = snapshot.data != null ? snapshot.data.documents : null;
+              return ListView.builder(
+                  itemCount: devices != null ? devices.length == null ? 0 : devices.length : 0,
+                  itemBuilder: (context, index) => _createListItem(devices[index]));
+          }
+        }
+      },
+    );
+  }*/
+
+  Widget _createListItem(DocumentSnapshot device) {
+    return ListTile(
+      title: device['name'],
+      subtitle: device['uid'],
+      onTap: (){
+//        var deviceModel = RoomModel.fromDocumentSnapshot(device);
+//        Navigator.pushNamed(context, roomDetailsPage, arguments: deviceModel);
+      },
+    );
+  }
+
+/*  Widget _buildListView() {
     return Container(
       margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Column(
@@ -151,15 +218,15 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
             child: ListView(
               controller: _controllerListView,
               children:
-                  /* _roomModel.lisDevices != null
-                  ? _isPressedDelete ? _showDevicesToDelete() : _showDevices():*/
-                  _showEmptyList(),
+                  */ /* _roomModel.lisDevices != null
+                  ? _isPressedDelete ? _showDevicesToDelete() :*/ /* _showDevices()
+//                  _showEmptyList(),
             ),
           ),
         ],
       ),
     );
-  }
+  }*/
 
   List<Widget> _showEmptyList() {
     return [];
@@ -199,14 +266,18 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
                   Align(
                     alignment: Alignment.centerLeft,
                     child: CircleAvatar(
+                      backgroundColor: Colors.grey,
+                      child: _myroom.uriImage.isEmpty
+                          ? Icon(IconFromIconName(_myroom.icon), size: 60.0, color: Colors.white)
+                          : null,
                       radius: 50.0,
-                      backgroundImage: AssetImage(pathSofa),
+                      backgroundImage: _myroom.uriImage.isNotEmpty ? AssetImage(_myroom.uriImage) : null,
                     ),
                   ),
                   Align(
                     alignment: Alignment.centerRight,
                     child: Text(
-                      _roomModel.name,
+                      _myroom.name,
                       style: TextStyle(fontSize: 30.0, fontFamily: "Lato", color: Colors.white),
                     ),
                   ),
@@ -219,20 +290,18 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
                   ),
                 ],
               )),
-          /*        ListTile(
+          ListTile(
             contentPadding: EdgeInsets.symmetric(horizontal: withDrawer / 6),
             title: Text("Añadir dispositivo"),
             onTap: () {
-              var route = new MaterialPageRoute(
-                  builder: (BuildContext context) =>
-                      DevicesScreen(_roomModel: _roomModel));
-              Navigator.pop(context);
-              Navigator.of(context).push(route);
+//              var route = new MaterialPageRoute(builder: (BuildContext context) =>DevicesScreen(_roomModel: _roomModel));
+//              Navigator.pop(context);
+//              Navigator.of(context).push(route);
 //              Navigator.of(context).push(
 //                  FadePageRoute(widget: DevicesScreen(room: room)));
             },
             leading: Icon(Icons.add_box),
-          ),*/
+          ),
           Divider(),
           ListTile(
             contentPadding: EdgeInsets.symmetric(horizontal: withDrawer / 6),
@@ -245,7 +314,7 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
           Divider(),
           ListTile(
             contentPadding: EdgeInsets.symmetric(horizontal: withDrawer / 6),
-            title: Text("Editar " + _roomModel.name),
+            title: Text("Editar " + _myroom.name),
             onTap: () {},
             leading: Icon(Icons.edit),
           ),
@@ -258,6 +327,7 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
           ),
           Divider(),
           Container(
+            margin: EdgeInsets.only(top: 50.0),
             width: withDrawer / 3,
             height: withDrawer / 3,
             child: Image(
