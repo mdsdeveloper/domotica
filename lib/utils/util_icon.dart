@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutterappdomotica/custom_icons.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 IconData IconFromIconName(String roomName){
   switch(roomName){
@@ -22,6 +23,12 @@ IconData IconFromIconName(String roomName){
     case "CustomIcons.balcon"         : return CustomIcons.balcon;
     case "CustomIcons.terraza"        : return CustomIcons.terraza;
     case "CustomIcons.escalera"       : return CustomIcons.escalera;
+    case "Luz techo"                  : return FontAwesomeIcons.lightbulb;
+    case "Enchufe"                    :
+    case "Enchufe pared"              :
+    case "Enchufe tv"                 :
+      return FontAwesomeIcons.plug;
+    case "Persiana"                   : return FontAwesomeIcons.windowClose;
     default: return Icons.linear_scale;
   }
 }

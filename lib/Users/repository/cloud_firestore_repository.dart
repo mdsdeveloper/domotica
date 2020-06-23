@@ -14,7 +14,13 @@ class CloudFirestoreRepository {
 
   void addRoomToUserFirestore(String userId, String roomsId, RoomModel roomModel) => _cloudFirestoreAPI.addRoomToUser(userId, roomsId, roomModel);
 
-  getAllRooms() => _cloudFirestoreAPI.getAllRooms();
+  Stream<QuerySnapshot> getAllRooms() => _cloudFirestoreAPI.getAllRooms();
 
   Stream<QuerySnapshot> getAllMyRooms(FirebaseUser user) => _cloudFirestoreAPI.getAllMyRooms(user);
+
+  Stream<QuerySnapshot> getAllDevices(String roomName) => _cloudFirestoreAPI.getAllDevices(roomName);
+
+  void changeStatusValue(String deviceUID, bool status) => _cloudFirestoreAPI.changeStatusValue(deviceUID, status);
+
+  void changeDeviceValue(String deviceUID, int value) => _cloudFirestoreAPI.changeDeviceValue(deviceUID, value);
 }

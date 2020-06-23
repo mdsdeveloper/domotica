@@ -28,3 +28,28 @@ Future LoginShowDialog(BuildContext context, String title, String message, Strin
         );
       });
 }
+
+Widget ErrorShowDialog(BuildContext context, String title, String message, String goToPage) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          elevation: 10.0,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20.0)),
+          title: Center(child: Text(title)),
+          content: Text(message,
+              style:
+              TextStyle(fontFamily: fontFamilyText, fontSize: 18.0)),
+          actions: [
+            FlatButton(
+              child: Text("Ok",
+                  style: TextStyle(
+                      fontFamily: fontFamilyText,
+                      fontSize: 18.0,
+                      color: Colors.blueAccent)),
+              onPressed: () =>
+                  Navigator.pushReplacementNamed(context, goToPage),
+            )
+          ],
+        );
+
+}

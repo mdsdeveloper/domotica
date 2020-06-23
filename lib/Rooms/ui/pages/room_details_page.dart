@@ -1,21 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutterappdomotica/Devices/bloc/devices_bloc.dart';
+import 'package:flutterappdomotica/Devices/model/device_model.dart';
+import 'package:flutterappdomotica/Devices/ui/widget/slider_widget.dart';
 import 'package:flutterappdomotica/Rooms/bloc/rooms_bloc.dart';
 import 'package:flutterappdomotica/Rooms/model/my_room.dart';
 import 'package:flutterappdomotica/Rooms/model/room_model.dart';
 import 'package:flutterappdomotica/Rooms/ui/widget/card_room.dart';
 import 'package:flutterappdomotica/Users/bloc/user_bloc.dart';
+import 'package:flutterappdomotica/Users/ui/widget/verified_show_dialog.dart';
 import 'package:flutterappdomotica/Widget/custom_raised_button.dart';
 import 'package:flutterappdomotica/Widget/gradient_back.dart';
 import 'package:flutterappdomotica/Widget/title_header.dart';
 import 'package:flutterappdomotica/constants.dart';
 import 'package:flutterappdomotica/providers/provider.dart';
 import 'package:flutterappdomotica/utils/util_icon.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class RoomDetailsPage extends StatefulWidget {
   @override
@@ -31,85 +37,48 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
   final FocusScopeNode focusScopeNode = FocusScopeNode();
   final TextStyle textStyle = TextStyle();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  bool isOn = false;
   bool editClicking = false;
   bool _isPressedDelete = false;
   bool _checkSelected = false;
+  bool _isOn;
+  bool isOnOffDevice;
   double screenWidth;
   double screenHeight;
+  double _valorSlider = 0.0;
 
 //  Device device;
 
   @override
   void initState() {
     super.initState();
-    /* _controllerListView.addListener(() {
-      if (_controllerListView.position.pixels > 50) {
-        setState(() {
-          _buildListView();
-        });
-      }
-    });*/
   }
 
   @override
   Widget build(BuildContext context) {
     final roomData = ModalRoute.of(context).settings.arguments;
-    final _roomBloc = Provider.roomsBloc(context);
-    final _userBloc = Provider.userBloc(context);
+//    final _roomBloc = Provider.roomsBloc(context);
+//    final _userBloc = Provider.userBloc(context);
+    final _devicesBloc = Provider.devicesBloc(context);
+    double withDrawer = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
 
     if (roomData != null) {
       _myroom = roomData;
     }
-    double withDrawer = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        leading: _isPressedDelete
-            ? IconButton(
-                icon: Icon(getCheckIcon(_checkSelected), size: 30.0),
-                padding: EdgeInsets.only(right: 50.0, left: 15.0),
-                onPressed: () {
-                  setState(() {
-                    _checkSelected = !_checkSelected;
-//                    seleccionar todos los devices.
-//                    _buildListView();
-                  });
-                })
-            : IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.pop(context);
-                }),
+        leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            }),
         backgroundColor: Color(0xFF4268D3),
         title: _buildNameRoom(),
-        actions: _isPressedDelete
-            ? <Widget>[
-                IconButton(icon: Icon(Icons.delete, size: 30.0), padding: EdgeInsets.only(right: 20.0), onPressed: () {}),
-                IconButton(
-                    icon: Icon(Icons.clear, size: 30.0),
-                    padding: EdgeInsets.only(right: 10.0),
-                    onPressed: () {
-                      setState(() {
-                        _isPressedDelete = false;
-                      });
-                    }),
-              ]
-            : <Widget>[
-                /* IconButton(
-                    icon: !editClicking ? Icon(Icons.edit) : Icon(Icons.save),
-                    onPressed: () {
-                      if (editClicking) {
-                        _roomModel.name = _nameController.text;
-                        print(_roomModel.name);
-                      }
-                      setState(() {
-                        editClicking = !editClicking;
-                      });
-                    }),*/
-                IconButton(icon: Icon(Icons.menu, size: 30.0), onPressed: () => _scaffoldKey.currentState.openEndDrawer()),
-              ],
+        actions: <Widget>[
+          IconButton(icon: Icon(Icons.menu, size: 30.0), onPressed: () => _scaffoldKey.currentState.openEndDrawer()),
+        ],
       ),
       endDrawer: Container(
         margin: EdgeInsets.only(top: 31, bottom: 15.0),
@@ -121,7 +90,7 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
       body: Stack(
         children: <Widget>[
           Hero(tag: _myroom.uid, child: GradientBack(height: null)),
-//          _buildListViewDevices(_roomBloc, _userBloc, context),
+          _createListViewDevices(_devicesBloc),
         ],
       ),
     );
@@ -152,106 +121,6 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
     );
   }
 
-/*
-  FutureBuilder _buildListViewDevices(RoomsBloc _roomsBloc, UserBloc _userBloc, BuildContext context) {
-    return FutureBuilder(
-      future: _userBloc.currentUser,
-      builder: (context, snapshot) {
-        if (!snapshot.hasError && snapshot.hasData) {
-//          var allMyRoomsListStream = _roomsBloc.allMyRoomsListStream(snapshot.data);
-//          _currentuser = snapshot.data;
-          return _createListViewDevices(_roomsBloc, _userBloc, allMyRoomsListStream);
-        } else if (!snapshot.hasError) {
-//          TODO:  mejorar este return
-          return CircularProgressIndicator();
-        } else {
-//          TODO:  mejorar este return
-          return null;
-        }
-      },
-    );
-  }
-*/
-
-/*  _createListViewDevices(DevicesBloc devicesBloc) {
-    return StreamBuilder(
-      stream: devicesBloc.allDevicesListStream,
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasError) {
-//          TODO: mejorar este return
-          return null;
-        } else {
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-            case ConnectionState.none:
-              return CircularProgressIndicator();
-            case ConnectionState.active:
-            case ConnectionState.done:
-            default:
-              final devices = snapshot.data != null ? snapshot.data.documents : null;
-              return ListView.builder(
-                  itemCount: devices != null ? devices.length == null ? 0 : devices.length : 0,
-                  itemBuilder: (context, index) => _createListItem(devices[index]));
-          }
-        }
-      },
-    );
-  }*/
-
-  Widget _createListItem(DocumentSnapshot device) {
-    return ListTile(
-      title: device['name'],
-      subtitle: device['uid'],
-      onTap: (){
-//        var deviceModel = RoomModel.fromDocumentSnapshot(device);
-//        Navigator.pushNamed(context, roomDetailsPage, arguments: deviceModel);
-      },
-    );
-  }
-
-/*  Widget _buildListView() {
-    return Container(
-      margin: EdgeInsets.only(top: 5.0, bottom: 5.0),
-      child: Column(
-        children: <Widget>[
-          Flexible(
-            child: ListView(
-              controller: _controllerListView,
-              children:
-                  */ /* _roomModel.lisDevices != null
-                  ? _isPressedDelete ? _showDevicesToDelete() :*/ /* _showDevices()
-//                  _showEmptyList(),
-            ),
-          ),
-        ],
-      ),
-    );
-  }*/
-
-  List<Widget> _showEmptyList() {
-    return [];
-  }
-
-/*  List<Widget> _showDevices() {
-    _roomModel.lisDevices.forEach((element) {
-      setState(() {
-        element.isPressedDelete = _isPressedDelete;
-      });
-    });
-    return _roomModel.lisDevices;
-  }*/
-
-/*  List<Widget> _showDevicesToDelete() {
-    _roomModel.lisDevices.forEach((element) {
-      setState(() {
-        print("Antes de " + element.isPressedDelete.toString());
-        element.isPressedDelete = _isPressedDelete;
-        print("Despues de " + element.isPressedDelete.toString());
-      });
-    });
-    return _roomModel.lisDevices;
-  }*/
-
   Drawer _buildDrawer(double withDrawer, double height, BuildContext context) {
     return Drawer(
       child: Column(
@@ -267,9 +136,8 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
                     alignment: Alignment.centerLeft,
                     child: CircleAvatar(
                       backgroundColor: Colors.grey,
-                      child: _myroom.uriImage.isEmpty
-                          ? Icon(IconFromIconName(_myroom.icon), size: 60.0, color: Colors.white)
-                          : null,
+                      child:
+                          _myroom.uriImage.isEmpty ? Icon(IconFromIconName(_myroom.icon), size: 60.0, color: Colors.white) : null,
                       radius: 50.0,
                       backgroundImage: _myroom.uriImage.isNotEmpty ? AssetImage(_myroom.uriImage) : null,
                     ),
@@ -339,29 +207,145 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
     );
   }
 
-/*  void _deleteDevice(BuildContext context) {
-    setState(() {
-      _isPressedDelete = true;
-    });
-    if (_roomModel.lisDevices.isNotEmpty) {
-      print("Elimina dispositivo");
-      _roomModel.lisDevices.removeLast();
-    }
-    _clean();
-    Navigator.of(context).pop();
-  }*/
-
-  void _clean() {
-    _nameController.clear();
+  _createListViewDevices(DevicesBloc devicesBloc) {
+    return StreamBuilder(
+      stream: devicesBloc.allDevicesListStreamByRoomName(_myroom.name),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasError) {
+          return ErrorShowDialog(context, "Error", devicesErrorGetDevices, roomsPage);
+        } else {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
+            case ConnectionState.none:
+              return Center(child: CircularProgressIndicator());
+            case ConnectionState.active:
+            case ConnectionState.done:
+            default:
+              final document = snapshot.data != null ? snapshot.data.documents : null;
+              return ListView.builder(
+                  itemCount: document != null ? document.length == null ? 0 : document.length : 0,
+                  itemBuilder: (context, index) => _createListItem(document[index], devicesBloc, context));
+          }
+        }
+      },
+    );
   }
 
-  @override
-  void dispose() {
-    _nameController.dispose();
-    super.dispose();
+  Widget _createListItem(DocumentSnapshot document, DevicesBloc devicesBloc, BuildContext context) {
+    var deviceModel = DeviceModel.fromDocumentSnapshot(document);
+    _isOn = deviceModel.status;
+    if (deviceModel.name.contains("Persiana")) {
+      isOnOffDevice = false;
+    } else {
+      isOnOffDevice = true;
+    }
+    return isOnOffDevice
+        ? Container(
+            margin: EdgeInsets.only(top: 10.0, right: 5.0, left: 5.0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: <BoxShadow>[BoxShadow(blurRadius: 3.0, offset: Offset(0.0, 3.0))],
+            ),
+            child: ListTile(
+              title: Center(
+                child: Text(
+                  deviceModel.name,
+                  style: TextStyle(fontFamily: fontFamilyText, color: Colors.black, fontSize: 20.0),
+                ),
+              ),
+              contentPadding: EdgeInsets.only(top: 10.0, bottom: 10.0, right: 10.0, left: 10.0),
+//                subtitle:Center(child: Text(deviceModel.uid, style: TextStyle(fontFamily: fontFamilyText, color: Colors.black38))),
+              leading: Icon(
+                IconFromIconName(deviceModel.name),
+                color: deviceModel.status ? Colors.green : Colors.red,
+                size: 30,
+              ),
+              trailing: Container(width: 80.0, child: _buildButtonOnOffDevice(deviceModel, devicesBloc, context)),
+              dense: false,
+              onTap: () {
+                _isOn = !deviceModel.status;
+                devicesBloc.changeStatusValue(deviceModel.uid, _isOn);
+                if (_isOn) {
+                  _onPressedFav(context, deviceModel);
+                }
+              },
+            ),
+          )
+        : SliderWidget(deviceModel);
+  }
+
+  Widget _buildButtonOnOffDevice(DeviceModel deviceModel, DevicesBloc devicesBloc, BuildContext context) {
+    return Switch(
+      value: deviceModel.status,
+      inactiveTrackColor: Colors.grey,
+      inactiveThumbColor: Colors.blueAccent,
+      activeTrackColor: Colors.green,
+      activeColor: Colors.white,
+      onChanged: (value) {
+        _isOn = !deviceModel.status;
+        devicesBloc.changeStatusValue(deviceModel.uid, _isOn);
+        if (_isOn) {
+          _onPressedFav(context, deviceModel);
+        }
+      },
+    );
   }
 
   IconData getCheckIcon(bool checkSelected) {
     return checkSelected ? Icons.check_box : Icons.check_box_outline_blank;
+  }
+
+  void _onPressedFav(BuildContext context, DeviceModel deviceModel) {
+    Flushbar(
+      duration: Duration(milliseconds: 900),
+      borderRadius: 10.0,
+      /*backgroundGradient: LinearGradient(
+        colors: [Color(0xFF4268D3), Color(0xFF584CD1)],
+        stops: [1, 0.5],
+      ),*/
+      boxShadows: [
+        BoxShadow(
+          color: Colors.black45,
+          offset: Offset(3, 3),
+          blurRadius: 5,
+        ),
+      ],
+      padding: EdgeInsets.only(left: 30, top: 5.0, bottom: 5.0),
+      titleText: Text(
+        "Has añadido: " + deviceModel.name,
+        style: TextStyle(
+          fontSize: 18.0,
+          fontFamily: "Lato",
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+//      forwardAnimationCurve: Curves.fastLinearToSlowEaseIn,
+      forwardAnimationCurve: Curves.fastOutSlowIn,
+      animationDuration: Duration(milliseconds: 900),
+      icon: Icon(
+        IconFromIconName(deviceModel.name),
+        color: Colors.green,
+        size: 30,
+      ),
+      flushbarStyle: FlushbarStyle.FLOATING,
+      margin: EdgeInsets.only(bottom: 200, left: 8.0, right: 8.0),
+      dismissDirection: FlushbarDismissDirection.HORIZONTAL,
+      messageText: Text(
+        deviceModel.roomName,
+        style: TextStyle(
+          fontSize: 18.0,
+          fontFamily: "Lato",
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+    )..show(context);
+  }
+
+  @override
+  void dispose() {
+    _nameController?.dispose();
+    super.dispose();
   }
 }

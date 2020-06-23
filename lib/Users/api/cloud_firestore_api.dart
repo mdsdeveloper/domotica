@@ -10,6 +10,7 @@ import 'package:flutterappdomotica/providers/provider.dart';
 class CloudFirestoreAPI {
   final String USERS = "users";
   final String ROOMS = "rooms";
+  final String DEVICES = "devices";
 
   final Firestore _db = Firestore.instance;
   static FirebaseAuth _auth = FirebaseAuth.instance;
@@ -50,4 +51,18 @@ class CloudFirestoreAPI {
         {'uid': roomModel.uid, 'name': roomModel.name, 'icon': roomModel.icon, 'uriImage': roomModel.uriImage},
         merge: true);
   }
+
+  Stream<QuerySnapshot> getAllDevices(String roomName) {
+    return _db.collection(CloudFirestoreAPI().DEVICES).where("roomName" , isEqualTo: roomName).snapshots();
+  }
+
+  void changeStatusValue(String deviceUID, bool status){
+    var snapshots = _db.collection(DEVICES).document(deviceUID).updateData({'status':status});
+  }
+
+  void changeDeviceValue(String deviceUID, int value){
+    _db.collection(DEVICES).document(deviceUID).updateData({'value':value});
+  }
+
+
 }

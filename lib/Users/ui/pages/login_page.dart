@@ -252,7 +252,6 @@ class _LoginScreen extends State<LoginPage> {
             userBloc.signInWithEmailAndPassword(context, loginBloc.email, loginBloc.password)
                 .then((logedUser) {
               if (logedUser.isEmailVerified) {
-                print("Validado y verificado");
                 _cleanTextField();
                 Navigator.pushReplacementNamed(context, homePage);
               } else {

@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:flutterappdomotica/Rooms/bloc/rooms_bloc.dart';
 import 'package:flutterappdomotica/Rooms/model/my_room.dart';
 import 'package:flutterappdomotica/Rooms/model/room_model.dart';
@@ -14,7 +13,6 @@ import 'package:flutterappdomotica/Widget/title_header.dart';
 import 'package:flutterappdomotica/constants.dart';
 import 'package:flutterappdomotica/providers/provider.dart';
 import 'package:flutterappdomotica/utils/util_icon.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class RoomsPage extends StatefulWidget {
   @override
@@ -28,29 +26,12 @@ class _RoomsPageState extends State<RoomsPage> {
   Icon _iconSelected;
   bool isCleanning = true;
   FirebaseUser _currentuser;
-
-  var _alertDialogController;
-
   RoomModel _roomModel;
-
-/*  Rooms rooms;
-  Room room;
-  RoomModel roomModel;
-
-  RoomBloc roomBloc;
-  RoomsBloc roomsBloc;
-  List<CardRoomNew> newCardList;*/
 
   @override
   Widget build(BuildContext context) {
     final _roomsBloc = Provider.roomsBloc(context);
     final _userBloc = Provider.userBloc(context);
-
-    /*  roomBloc = Provider.roomBloc(context);
-   roomsBloc = Provider.roomsBloc(context);
-    if(newCardList == null){
-      newCardList = new List<CardRoomNew>();
-    }*/
 
     return Scaffold(
       body: Stack(
@@ -58,8 +39,6 @@ class _RoomsPageState extends State<RoomsPage> {
           GradientBack(height: null),
           _buildAppBarRoom(),
           buildFutureBuilder(_roomsBloc, _userBloc, context),
-
-//          _addRoomsBTN(context),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -113,7 +92,7 @@ class _RoomsPageState extends State<RoomsPage> {
             ),
           );
         } else {
-          return null;
+          return ErrorShowDialog(context, "Error", myroomsErrorGetmyrooms, loginPage);
         }
       },
     );
@@ -148,9 +127,7 @@ class _RoomsPageState extends State<RoomsPage> {
       useRootNavigator: true,
       barrierDismissible: false,
       builder: (context) {
-        // return alert dialog object
         return AlertDialog(
-//          key: _alertDialogController,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
           title: Center(child: Text('Añadír Habitación')),
           content: Container(
@@ -162,7 +139,6 @@ class _RoomsPageState extends State<RoomsPage> {
                 Expanded(
                   child: _dropDownList(context, allRoomsListSream, roomsBloc),
                 ),
-//                SizedBox(height: 10.0,),
                 Container(
                   width: 220.0,
                   child: TextField(
@@ -310,18 +286,6 @@ class _RoomsPageState extends State<RoomsPage> {
     _iconSelected = null;
     isCleanning = true;
     _selected = null;
-//    _roomsId = null;
-  }
-
-  void clear() {
-    _textFieldRoomController.clear();
-//    room = new Room();
-  }
-
-  @override
-  void dispose() {
-    _textFieldRoomController.dispose();
-    super.dispose();
   }
 
   RoomModel _buildRoomModel(Map<String, dynamic> data, RoomsBloc roomsBloc) {
@@ -342,8 +306,7 @@ class _RoomsPageState extends State<RoomsPage> {
           DocumentSnapshot document = snapshot.data.documents[index];
 
           if (document['name'] == null) {
-//            TODO: arreglar esto
-            return Text("ko");
+            return cardRoomErroWidget();
           } else {
             return Padding(
               padding: const EdgeInsets.all(8.0),
@@ -396,6 +359,42 @@ class _RoomsPageState extends State<RoomsPage> {
     );
   }
 
+  cardRoomErroWidget() {
+    return  Card(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+          color: Colors.white,
+            child: Container(
+              alignment: Alignment.center,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Flexible(
+                    child: Container(
+                      padding: EdgeInsets.only(bottom: 10.0),
+                      child: Text(
+                        "Sin habitacion",
+                        style: TextStyle(fontFamily: "Lato", fontWeight: FontWeight.bold, fontSize: 20.0),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: Text(
+                      "Habitación con error",
+                      softWrap: true,
+                      textAlign: TextAlign.center,
+                      overflow: TextOverflow.clip,
+                      style: TextStyle(fontSize: 18.0, fontFamily: fontFamilyText, fontWeight: FontWeight.w500),
+                    ),
+                  )
+                ],
+              ),
+
+          ),
+        );
+  }
+
   String _addNameRoom(String name) => name.isNotEmpty ? name : "Habitación";
 
   Widget _showImage(MyRoom myroom) {
@@ -433,5 +432,15 @@ class _RoomsPageState extends State<RoomsPage> {
 
   getAssetImage(MyRoom myroom) {
     return myroom.uriImage.isNotEmpty ? myroom.uriImage : pathSofa;
+  }
+
+  void clear() {
+    _textFieldRoomController.clear();
+  }
+
+  @override
+  void dispose() {
+    _textFieldRoomController.dispose();
+    super.dispose();
   }
 }

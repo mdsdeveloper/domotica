@@ -26,9 +26,9 @@ class TitleHeader extends StatelessWidget {
             child: SizedBox(
               height:  45.0,
               width: 45.0,
-              child: onPressed != null ? IconButton(
+              child: /*onPressed != null ? IconButton(
                   icon: Icon(Icons.arrow_back, color: Colors.white, size: 25),
-                  onPressed: onPressed): null,
+                  onPressed: onPressed): */null,
             ),
           ),
           Expanded(
