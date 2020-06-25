@@ -1,5 +1,7 @@
 
 
+import 'package:flutterappdomotica/Devices/model/device_model.dart';
+
 const String pathLogo                = "assets/images/logo1.jpg";
 const String pathSofa                = "assets/images/sofa.jpg";
 const String pathBombillaEncendida   = "assets/images/bombilla-encendida.jpg";
@@ -49,4 +51,7 @@ const loginError           = "El usuario o la contraseña son incorrectos";
 const roomsErrorGetRooms   = "Ha ocurrido un error al traer todas las habitaciones";
 const devicesErrorGetDevices   = "Ha ocurrido un error al cargar los dispositivos de la habitación";
 const myroomsErrorGetmyrooms   = "Ha ocurrido un error al cargar tus habitaciones";
+
+List<DeviceModel> listDeviceModel = List();
+List<String> listaUIDs = List();
 

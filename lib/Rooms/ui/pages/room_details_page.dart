@@ -9,6 +9,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutterappdomotica/Devices/bloc/devices_bloc.dart';
 import 'package:flutterappdomotica/Devices/model/device_model.dart';
 import 'package:flutterappdomotica/Devices/ui/widget/slider_widget.dart';
+import 'package:flutterappdomotica/Devices/ui/widget/tile_widget.dart';
 import 'package:flutterappdomotica/Rooms/bloc/rooms_bloc.dart';
 import 'package:flutterappdomotica/Rooms/model/my_room.dart';
 import 'package:flutterappdomotica/Rooms/model/room_model.dart';
@@ -45,6 +46,7 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
   double screenWidth;
   double screenHeight;
   double _valorSlider = 0.0;
+  List<Widget> lista = new List();
 
 //  Device device;
 
@@ -221,18 +223,46 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
             case ConnectionState.active:
             case ConnectionState.done:
             default:
-              final document = snapshot.data != null ? snapshot.data.documents : null;
-              return ListView.builder(
+              final document = snapshot.data != null ? snapshot.data.documents : 0;
+              for (int i = 0; i < document.length; i++) {
+                var deviceModel = DeviceModel.fromDocumentSnapshot(document[i]);
+                if (lista.isNotEmpty && lista.length == document.length) {
+                  if (!listaUIDs.contains(deviceModel.uid)) {
+                    lista.add(_createListItem(deviceModel, devicesBloc, context));
+                  }
+                } else {
+                  listaUIDs.add(deviceModel.uid);
+                  lista.add(_createListItem(deviceModel, devicesBloc, context));
+                }
+              }
+              return ReorderableListView(
+                header: SizedBox(height: 5.0,),
+                onReorder: _onReorder,
+                children: lista,
+              );
+            /* return ListView.builder(
                   itemCount: document != null ? document.length == null ? 0 : document.length : 0,
-                  itemBuilder: (context, index) => _createListItem(document[index], devicesBloc, context));
+                  itemBuilder: (context, index) => _createListItem(document[index], devicesBloc, context));*/
           }
         }
       },
     );
   }
 
-  Widget _createListItem(DocumentSnapshot document, DevicesBloc devicesBloc, BuildContext context) {
-    var deviceModel = DeviceModel.fromDocumentSnapshot(document);
+  void _onReorder(int oldIndex, int newIndex) {
+    setState(
+      () {
+        if (newIndex > oldIndex) {
+          newIndex -= 1;
+        }
+        final Widget item = lista.removeAt(oldIndex);
+        lista.insert(newIndex, item);
+      },
+    );
+  }
+
+  Widget _createListItem(DeviceModel deviceModel, DevicesBloc devicesBloc, BuildContext context) {
+//    var deviceModel = DeviceModel.fromDocumentSnapshot(document);
     _isOn = deviceModel.status;
     if (deviceModel.name.contains("Persiana")) {
       isOnOffDevice = false;
@@ -241,12 +271,15 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
     }
     return isOnOffDevice
         ? Container(
-            margin: EdgeInsets.only(top: 10.0, right: 5.0, left: 5.0),
+            height: 80.0,
+            key: UniqueKey(),
+            margin: EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0, bottom: 5.0),
             decoration: BoxDecoration(
               color: Colors.white,
               boxShadow: <BoxShadow>[BoxShadow(blurRadius: 3.0, offset: Offset(0.0, 3.0))],
             ),
-            child: ListTile(
+            child: TileWidget(deviceModel))
+        /*ListTile(
               title: Center(
                 child: Text(
                   deviceModel.name,
@@ -270,8 +303,17 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
                 }
               },
             ),
-          )
-        : SliderWidget(deviceModel);
+          )*/
+        : Container(
+            height: 80.0,
+            key: UniqueKey(),
+            margin: EdgeInsets.only(top: 5.0, right: 5.0, left: 5.0, bottom: 5.0),
+//      color: Colors.lightBlueAccent,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              boxShadow: <BoxShadow>[BoxShadow(blurRadius: 3.0, offset: Offset(0.0, 3.0))],
+            ),
+            child: SliderWidget(deviceModel));
   }
 
   Widget _buildButtonOnOffDevice(DeviceModel deviceModel, DevicesBloc devicesBloc, BuildContext context) {

@@ -5,6 +5,7 @@ import 'package:flutterappdomotica/custom_icons.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 IconData IconFromIconName(String roomName){
+  RegExp puertaRex = new RegExp(r'Puerta');
   switch(roomName){
     case "CustomIcons.sofa"           : return CustomIcons.sofa;
     case "CustomIcons.comedor"        : return CustomIcons.comedor;
@@ -29,6 +30,10 @@ IconData IconFromIconName(String roomName){
     case "Enchufe tv"                 :
       return FontAwesomeIcons.plug;
     case "Persiana"                   : return FontAwesomeIcons.windowClose;
+    case  "Puerta"                    :
+    case  "Puerta garage"             :
+    case  "Puerta sotano"             : return FontAwesomeIcons.doorClosed;
+    case  "CustomIcons.doorOpen"             : return FontAwesomeIcons.doorOpen;
     default: return Icons.linear_scale;
   }
 }

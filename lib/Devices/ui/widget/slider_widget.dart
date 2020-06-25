@@ -18,14 +18,15 @@ class _SliderWidgetState extends State<SliderWidget> {
   @override
   Widget build(BuildContext context) {
     final _devicesBloc = Provider.devicesBloc(context);
-    return Container(
+    return /*Container(
+      key: widget.uniqueKey,
       margin: EdgeInsets.only(top: 10.0, right: 5.0, left: 5.0),
 //      color: Colors.lightBlueAccent,
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: <BoxShadow>[BoxShadow(blurRadius: 3.0, offset: Offset(0.0, 3.0))],
       ),
-      child: Row(
+      child:*/ Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Container(height: 80, width: 80, child: buildIcon()),
@@ -59,7 +60,7 @@ class _SliderWidgetState extends State<SliderWidget> {
             ),
           ]),
         ],
-      ),
+//      ),
     );
 
     /*Container(
