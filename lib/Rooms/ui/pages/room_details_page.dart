@@ -14,6 +14,7 @@ import 'package:flutterappdomotica/Rooms/bloc/rooms_bloc.dart';
 import 'package:flutterappdomotica/Rooms/model/my_room.dart';
 import 'package:flutterappdomotica/Rooms/model/room_model.dart';
 import 'package:flutterappdomotica/Rooms/ui/widget/card_room.dart';
+import 'package:flutterappdomotica/Users/api/cloud_firestore_api.dart';
 import 'package:flutterappdomotica/Users/bloc/user_bloc.dart';
 import 'package:flutterappdomotica/Users/ui/widget/verified_show_dialog.dart';
 import 'package:flutterappdomotica/Widget/custom_raised_button.dart';
@@ -47,6 +48,7 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
   double screenHeight;
   double _valorSlider = 0.0;
   List<Widget> lista = new List();
+  final String DEVICES = "devices";
 
 //  Device device;
 
@@ -60,7 +62,7 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
     final roomData = ModalRoute.of(context).settings.arguments;
 //    final _roomBloc = Provider.roomsBloc(context);
 //    final _userBloc = Provider.userBloc(context);
-    final _devicesBloc = Provider.devicesBloc(context);
+    final devicesBloc = Provider.devicesBloc(context);
     double withDrawer = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
@@ -92,7 +94,22 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
       body: Stack(
         children: <Widget>[
           Hero(tag: _myroom.uid, child: GradientBack(height: null)),
-          _createListViewDevices(_devicesBloc),
+//          _createListViewDevices(_devicesBloc),
+          ReorderableFirebaseList(
+            roomName: _myroom.name,
+            collection: devicesBloc.allDevicesListStreamByRoomName(_myroom.name),/*Firestore.instance.collection(CloudFirestoreAPI().DEVICES).where("roomName" , isEqualTo: _myroom.name).snapshots()*//*Firestore.instance.collection("rooms"),*/
+            indexKey: 'pos',
+            itemBuilder: (BuildContext context, int index, DocumentSnapshot doc) {
+              var deviceModel = DeviceModel.fromDocumentSnapshot(doc);
+              return _createListItem(deviceModel, devicesBloc,context);
+
+               /*
+                ListTile(
+                key: Key(doc.documentID),
+                title: Text(doc.data['name']),
+              );*/
+            },
+          )
         ],
       ),
     );
@@ -209,57 +226,59 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
     );
   }
 
-  _createListViewDevices(DevicesBloc devicesBloc) {
-    return StreamBuilder(
-      stream: devicesBloc.allDevicesListStreamByRoomName(_myroom.name),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasError) {
-          return ErrorShowDialog(context, "Error", devicesErrorGetDevices, roomsPage);
-        } else {
-          switch (snapshot.connectionState) {
-            case ConnectionState.waiting:
-            case ConnectionState.none:
-              return Center(child: CircularProgressIndicator());
-            case ConnectionState.active:
-            case ConnectionState.done:
-            default:
-              final document = snapshot.data != null ? snapshot.data.documents : 0;
-              for (int i = 0; i < document.length; i++) {
-                var deviceModel = DeviceModel.fromDocumentSnapshot(document[i]);
-                if (lista.isNotEmpty && lista.length == document.length) {
-                  if (!listaUIDs.contains(deviceModel.uid)) {
-                    lista.add(_createListItem(deviceModel, devicesBloc, context));
-                  }
-                } else {
-                  listaUIDs.add(deviceModel.uid);
-                  lista.add(_createListItem(deviceModel, devicesBloc, context));
-                }
-              }
-              return ReorderableListView(
-                header: SizedBox(height: 5.0,),
-                onReorder: _onReorder,
-                children: lista,
-              );
-            /* return ListView.builder(
-                  itemCount: document != null ? document.length == null ? 0 : document.length : 0,
-                  itemBuilder: (context, index) => _createListItem(document[index], devicesBloc, context));*/
-          }
-        }
-      },
-    );
-  }
+//  _createListViewDevices(DevicesBloc devicesBloc) {
+//    return StreamBuilder(
+//      stream: devicesBloc.allDevicesListStreamByRoomName(_myroom.name),
+//      builder: (BuildContext context, AsyncSnapshot snapshot) {
+//        if (snapshot.hasError) {
+//          return ErrorShowDialog(context, "Error", devicesErrorGetDevices, roomsPage);
+//        } else {
+//          switch (snapshot.connectionState) {
+//            case ConnectionState.waiting:
+//            case ConnectionState.none:
+//              return Center(child: CircularProgressIndicator());
+//            case ConnectionState.active:
+//            case ConnectionState.done:
+//            default:
+//              final document = snapshot.data != null ? snapshot.data.documents : 0;
+//              for (int i = 0; i < document.length; i++) {
+//                var deviceModel = DeviceModel.fromDocumentSnapshot(document[i]);
+//                if (lista.isNotEmpty && lista.length == document.length) {
+//                  if (!listaUIDs.contains(deviceModel.uid)) {
+//                    lista.add(_createListItem(deviceModel, devicesBloc, context));
+//                  }
+//                } else {
+//                  listaUIDs.add(deviceModel.uid);
+//                  lista.add(_createListItem(deviceModel, devicesBloc, context));
+//                }
+//              }
+//              return ReorderableListView(
+//                header: SizedBox(
+//                  height: 5.0,
+//                ),
+//                onReorder: _onReorder,
+//                children: lista,
+//              );
+//            /* return ListView.builder(
+//                  itemCount: document != null ? document.length == null ? 0 : document.length : 0,
+//                  itemBuilder: (context, index) => _createListItem(document[index], devicesBloc, context));*/
+//          }
+//        }
+//      },
+//    );
+//  }
 
-  void _onReorder(int oldIndex, int newIndex) {
-    setState(
-      () {
-        if (newIndex > oldIndex) {
-          newIndex -= 1;
-        }
-        final Widget item = lista.removeAt(oldIndex);
-        lista.insert(newIndex, item);
-      },
-    );
-  }
+//  void _onReorder(int oldIndex, int newIndex) {
+//    setState(
+//      () {
+//        if (newIndex > oldIndex) {
+//          newIndex -= 1;
+//        }
+//        final Widget item = lista.removeAt(oldIndex);
+//        lista.insert(newIndex, item);
+//      },
+//    );
+//  }
 
   Widget _createListItem(DeviceModel deviceModel, DevicesBloc devicesBloc, BuildContext context) {
 //    var deviceModel = DeviceModel.fromDocumentSnapshot(document);
@@ -316,78 +335,148 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
             child: SliderWidget(deviceModel));
   }
 
-  Widget _buildButtonOnOffDevice(DeviceModel deviceModel, DevicesBloc devicesBloc, BuildContext context) {
-    return Switch(
-      value: deviceModel.status,
-      inactiveTrackColor: Colors.grey,
-      inactiveThumbColor: Colors.blueAccent,
-      activeTrackColor: Colors.green,
-      activeColor: Colors.white,
-      onChanged: (value) {
-        _isOn = !deviceModel.status;
-        devicesBloc.changeStatusValue(deviceModel.uid, _isOn);
-        if (_isOn) {
-          _onPressedFav(context, deviceModel);
-        }
-      },
-    );
-  }
+//  Widget _buildButtonOnOffDevice(DeviceModel deviceModel, DevicesBloc devicesBloc, BuildContext context) {
+//    return Switch(
+//      value: deviceModel.status,
+//      inactiveTrackColor: Colors.grey,
+//      inactiveThumbColor: Colors.blueAccent,
+//      activeTrackColor: Colors.green,
+//      activeColor: Colors.white,
+//      onChanged: (value) {
+//        _isOn = !deviceModel.status;
+//        devicesBloc.changeStatusValue(deviceModel.uid, _isOn);
+//        if (_isOn) {
+//          _onPressedFav(context, deviceModel);
+//        }
+//      },
+//    );
+//  }
 
   IconData getCheckIcon(bool checkSelected) {
     return checkSelected ? Icons.check_box : Icons.check_box_outline_blank;
   }
 
-  void _onPressedFav(BuildContext context, DeviceModel deviceModel) {
-    Flushbar(
-      duration: Duration(milliseconds: 900),
-      borderRadius: 10.0,
-      /*backgroundGradient: LinearGradient(
-        colors: [Color(0xFF4268D3), Color(0xFF584CD1)],
-        stops: [1, 0.5],
-      ),*/
-      boxShadows: [
-        BoxShadow(
-          color: Colors.black45,
-          offset: Offset(3, 3),
-          blurRadius: 5,
-        ),
-      ],
-      padding: EdgeInsets.only(left: 30, top: 5.0, bottom: 5.0),
-      titleText: Text(
-        "Has añadido: " + deviceModel.name,
-        style: TextStyle(
-          fontSize: 18.0,
-          fontFamily: "Lato",
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-      ),
-//      forwardAnimationCurve: Curves.fastLinearToSlowEaseIn,
-      forwardAnimationCurve: Curves.fastOutSlowIn,
-      animationDuration: Duration(milliseconds: 900),
-      icon: Icon(
-        IconFromIconName(deviceModel.name),
-        color: Colors.green,
-        size: 30,
-      ),
-      flushbarStyle: FlushbarStyle.FLOATING,
-      margin: EdgeInsets.only(bottom: 200, left: 8.0, right: 8.0),
-      dismissDirection: FlushbarDismissDirection.HORIZONTAL,
-      messageText: Text(
-        deviceModel.roomName,
-        style: TextStyle(
-          fontSize: 18.0,
-          fontFamily: "Lato",
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-      ),
-    )..show(context);
-  }
+//  void _onPressedFav(BuildContext context, DeviceModel deviceModel) {
+//    Flushbar(
+//      duration: Duration(milliseconds: 900),
+//      borderRadius: 10.0,
+//      /*backgroundGradient: LinearGradient(
+//        colors: [Color(0xFF4268D3), Color(0xFF584CD1)],
+//        stops: [1, 0.5],
+//      ),*/
+//      boxShadows: [
+//        BoxShadow(
+//          color: Colors.black45,
+//          offset: Offset(3, 3),
+//          blurRadius: 5,
+//        ),
+//      ],
+//      padding: EdgeInsets.only(left: 30, top: 5.0, bottom: 5.0),
+//      titleText: Text(
+//        "Has añadido: " + deviceModel.name,
+//        style: TextStyle(
+//          fontSize: 18.0,
+//          fontFamily: "Lato",
+//          fontWeight: FontWeight.bold,
+//          color: Colors.white,
+//        ),
+//      ),
+////      forwardAnimationCurve: Curves.fastLinearToSlowEaseIn,
+//      forwardAnimationCurve: Curves.fastOutSlowIn,
+//      animationDuration: Duration(milliseconds: 900),
+//      icon: Icon(
+//        IconFromIconName(deviceModel.name),
+//        color: Colors.green,
+//        size: 30,
+//      ),
+//      flushbarStyle: FlushbarStyle.FLOATING,
+//      margin: EdgeInsets.only(bottom: 200, left: 8.0, right: 8.0),
+//      dismissDirection: FlushbarDismissDirection.HORIZONTAL,
+//      messageText: Text(
+//        deviceModel.roomName,
+//        style: TextStyle(
+//          fontSize: 18.0,
+//          fontFamily: "Lato",
+//          fontWeight: FontWeight.bold,
+//          color: Colors.white,
+//        ),
+//      ),
+//    )..show(context);
+//  }
 
   @override
   void dispose() {
     _nameController?.dispose();
     super.dispose();
+  }
+}
+
+typedef ReorderableWidgetBuilder = Widget Function(BuildContext context, int index, DocumentSnapshot doc);
+
+class ReorderableFirebaseList extends StatefulWidget {
+  const ReorderableFirebaseList({
+    Key key,
+    @required this.collection,
+    @required this.indexKey,
+    @required this.itemBuilder,
+    @required this.roomName,
+    this.descending = false,
+  }) : super(key: key);
+
+  final Stream<QuerySnapshot> collection;
+  final String indexKey;
+  final bool descending;
+  final ReorderableWidgetBuilder itemBuilder;
+  final String roomName;
+
+  @override
+  _ReorderableFirebaseListState createState() => _ReorderableFirebaseListState();
+}
+
+class _ReorderableFirebaseListState extends State<ReorderableFirebaseList> {
+  List<DocumentSnapshot> _docs;
+  Future _saving;
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _saving,
+      builder: (BuildContext context, AsyncSnapshot snapshotfuture) {
+        if (snapshotfuture.connectionState == ConnectionState.none || snapshotfuture.connectionState == ConnectionState.done) {
+          return StreamBuilder<QuerySnapshot>(
+            stream: widget.collection/*.where("roomName" , isEqualTo: widget.roomName)*//*.orderBy(widget.indexKey, descending: widget.descending).snapshots()*/,
+            builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              if (snapshot.hasData) {
+                _docs = snapshot.data.documents;
+                return ReorderableListView(
+                  onReorder: _onReorder,
+                  children: List.generate(_docs.length, (int index) {
+                    return widget.itemBuilder(context, index, _docs[index]);
+                  }),
+                );
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            },
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
+  }
+
+  void _onReorder(int oldIndex, int newIndex) {
+    if (oldIndex < newIndex) newIndex -= 1;
+    _docs.insert(newIndex, _docs.removeAt(oldIndex));
+    final batch = Firestore.instance.batch();
+    for (int pos = 0; pos < _docs.length; pos++) {
+      batch.updateData(_docs[pos].reference, {widget.indexKey: pos});
+    }
+    batch.commit();
   }
 }

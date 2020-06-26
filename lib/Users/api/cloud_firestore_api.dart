@@ -53,7 +53,7 @@ class CloudFirestoreAPI {
   }
 
   Stream<QuerySnapshot> getAllDevices(String roomName) {
-    return _db.collection(CloudFirestoreAPI().DEVICES).where("roomName" , isEqualTo: roomName).snapshots();
+    return _db.collection(CloudFirestoreAPI().DEVICES).where("roomName" , isEqualTo: roomName).orderBy('pos', descending: false).snapshots();
   }
 
   void changeStatusValue(String deviceUID, bool status){
