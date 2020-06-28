@@ -8,6 +8,7 @@ class DeviceModel {
   String pathImageOff;
   bool status;
   int value;
+  int pos;
 
   DeviceModel({
     this.uid = "",

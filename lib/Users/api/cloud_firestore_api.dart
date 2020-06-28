@@ -53,16 +53,22 @@ class CloudFirestoreAPI {
   }
 
   Stream<QuerySnapshot> getAllDevices(String roomName) {
-    return _db.collection(CloudFirestoreAPI().DEVICES).where("roomName" , isEqualTo: roomName).orderBy('pos', descending: false).snapshots();
+    return _db
+        .collection(CloudFirestoreAPI().DEVICES)
+        .where("roomName", isEqualTo: roomName)
+        .orderBy('pos', descending: false)
+        .snapshots();
   }
 
-  void changeStatusValue(String deviceUID, bool status){
-    var snapshots = _db.collection(DEVICES).document(deviceUID).updateData({'status':status});
+  void changeStatusValue(String deviceUID, bool status) {
+    var ref = _db.collection(DEVICES).document(deviceUID);
+    _db.runTransaction((transaction) => transaction.update(ref, {'status': status}));
+//    var snapshots = _db.collection(DEVICES).document(deviceUID).updateData({'status':status});
   }
 
-  void changeDeviceValue(String deviceUID, int value){
-    _db.collection(DEVICES).document(deviceUID).updateData({'value':value});
+  void changeDeviceValue(String deviceUID, int value) {
+    var ref = _db.collection(DEVICES).document(deviceUID);
+    _db.runTransaction((transaction) => transaction.update(ref, {'value': value}));
+//    _db.collection(DEVICES).document(deviceUID).updateData({'value': value});
   }
-
-
 }

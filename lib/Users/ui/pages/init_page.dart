@@ -34,6 +34,9 @@ class _InitPageState extends State<InitPage> {
       future: userBloc.currentUser,
       builder: (context, snapshot) {
         if (!snapshot.hasError) {
+          if(snapshot.data != null){
+            return CurvedNavigationBarInit();
+          }
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
             case ConnectionState.none:
