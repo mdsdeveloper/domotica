@@ -10,7 +10,7 @@ Future LoginShowDialog(BuildContext context, String title, String message, Strin
           elevation: 10.0,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.0)),
-          title: Center(child: Text(title)),
+          title: Center(child: Text(title,)),
           content: Text(message,
               style:
               TextStyle(fontFamily: fontFamilyText, fontSize: 18.0)),
@@ -21,13 +21,13 @@ Future LoginShowDialog(BuildContext context, String title, String message, Strin
                       fontFamily: fontFamilyText,
                       fontSize: 18.0,
                       color: Colors.blueAccent)),
-              onPressed: () =>
-                  Navigator.pushReplacementNamed(context, goToPage),
+              onPressed: () => Navigator.pushReplacementNamed(context, goToPage),
             )
           ],
         );
       });
 }
+
 
 Widget ErrorShowDialog(BuildContext context, String title, String message, String goToPage) {
         return AlertDialog(

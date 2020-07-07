@@ -94,10 +94,9 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
       body: Stack(
         children: <Widget>[
           Hero(tag: _myroom.uid, child: GradientBack(height: null)),
-//          _createListViewDevices(_devicesBloc),
           ReorderableFirebaseList(
             roomName: _myroom.name,
-            collection: devicesBloc.allDevicesListStreamByRoomName(_myroom.name),/*Firestore.instance.collection(CloudFirestoreAPI().DEVICES).where("roomName" , isEqualTo: _myroom.name).snapshots()*//*Firestore.instance.collection("rooms"),*/
+            collection: devicesBloc.allDevicesListStreamByRoomName(_myroom.uid),/*Firestore.instance.collection(CloudFirestoreAPI().DEVICES).where("roomName" , isEqualTo: _myroom.name).snapshots()*//*Firestore.instance.collection("rooms"),*/
             indexKey: 'pos',
             itemBuilder: (BuildContext context, int index, DocumentSnapshot doc) {
               var deviceModel = DeviceModel.fromDocumentSnapshot(doc);
@@ -120,7 +119,7 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
       alignment: _isPressedDelete ? Alignment.center : Alignment.centerLeft,
       child: !editClicking
           ? Text(
-              _myroom.nickName != null && _myroom.nickName.isNotEmpty ? _myroom.nickName : _myroom.name,
+             _myroom.name,
             )
           : EditableText(
               textInputAction: TextInputAction.newline,
@@ -202,15 +201,10 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
           ListTile(
             contentPadding: EdgeInsets.symmetric(horizontal: withDrawer / 6),
             title: Text("Editar " + _myroom.name),
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(context, myRoomPage, arguments: _myroom);
+            },
             leading: Icon(Icons.edit),
-          ),
-          Divider(),
-          ListTile(
-            contentPadding: EdgeInsets.symmetric(horizontal: withDrawer / 6),
-            title: Text("Una acción"),
-            onTap: () {},
-            leading: Icon(Icons.settings),
           ),
           Divider(),
           Container(
@@ -226,62 +220,7 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
     );
   }
 
-//  _createListViewDevices(DevicesBloc devicesBloc) {
-//    return StreamBuilder(
-//      stream: devicesBloc.allDevicesListStreamByRoomName(_myroom.name),
-//      builder: (BuildContext context, AsyncSnapshot snapshot) {
-//        if (snapshot.hasError) {
-//          return ErrorShowDialog(context, "Error", devicesErrorGetDevices, roomsPage);
-//        } else {
-//          switch (snapshot.connectionState) {
-//            case ConnectionState.waiting:
-//            case ConnectionState.none:
-//              return Center(child: CircularProgressIndicator());
-//            case ConnectionState.active:
-//            case ConnectionState.done:
-//            default:
-//              final document = snapshot.data != null ? snapshot.data.documents : 0;
-//              for (int i = 0; i < document.length; i++) {
-//                var deviceModel = DeviceModel.fromDocumentSnapshot(document[i]);
-//                if (lista.isNotEmpty && lista.length == document.length) {
-//                  if (!listaUIDs.contains(deviceModel.uid)) {
-//                    lista.add(_createListItem(deviceModel, devicesBloc, context));
-//                  }
-//                } else {
-//                  listaUIDs.add(deviceModel.uid);
-//                  lista.add(_createListItem(deviceModel, devicesBloc, context));
-//                }
-//              }
-//              return ReorderableListView(
-//                header: SizedBox(
-//                  height: 5.0,
-//                ),
-//                onReorder: _onReorder,
-//                children: lista,
-//              );
-//            /* return ListView.builder(
-//                  itemCount: document != null ? document.length == null ? 0 : document.length : 0,
-//                  itemBuilder: (context, index) => _createListItem(document[index], devicesBloc, context));*/
-//          }
-//        }
-//      },
-//    );
-//  }
-
-//  void _onReorder(int oldIndex, int newIndex) {
-//    setState(
-//      () {
-//        if (newIndex > oldIndex) {
-//          newIndex -= 1;
-//        }
-//        final Widget item = lista.removeAt(oldIndex);
-//        lista.insert(newIndex, item);
-//      },
-//    );
-//  }
-
   Widget _createListItem(DeviceModel deviceModel, DevicesBloc devicesBloc, BuildContext context) {
-//    var deviceModel = DeviceModel.fromDocumentSnapshot(document);
     _isOn = deviceModel.status;
     if (deviceModel.name.contains("Persiana")) {
       isOnOffDevice = false;
@@ -298,31 +237,6 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
               boxShadow: <BoxShadow>[BoxShadow(blurRadius: 3.0, offset: Offset(0.0, 3.0))],
             ),
             child: TileWidget(deviceModel))
-        /*ListTile(
-              title: Center(
-                child: Text(
-                  deviceModel.name,
-                  style: TextStyle(fontFamily: fontFamilyText, color: Colors.black, fontSize: 20.0),
-                ),
-              ),
-              contentPadding: EdgeInsets.only(top: 10.0, bottom: 10.0, right: 10.0, left: 10.0),
-//                subtitle:Center(child: Text(deviceModel.uid, style: TextStyle(fontFamily: fontFamilyText, color: Colors.black38))),
-              leading: Icon(
-                IconFromIconName(deviceModel.name),
-                color: deviceModel.status ? Colors.green : Colors.red,
-                size: 30,
-              ),
-              trailing: Container(width: 80.0, child: _buildButtonOnOffDevice(deviceModel, devicesBloc, context)),
-              dense: false,
-              onTap: () {
-                _isOn = !deviceModel.status;
-                devicesBloc.changeStatusValue(deviceModel.uid, _isOn);
-                if (_isOn) {
-                  _onPressedFav(context, deviceModel);
-                }
-              },
-            ),
-          )*/
         : Container(
             height: 80.0,
             key: UniqueKey(),
@@ -335,74 +249,9 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
             child: SliderWidget(deviceModel));
   }
 
-//  Widget _buildButtonOnOffDevice(DeviceModel deviceModel, DevicesBloc devicesBloc, BuildContext context) {
-//    return Switch(
-//      value: deviceModel.status,
-//      inactiveTrackColor: Colors.grey,
-//      inactiveThumbColor: Colors.blueAccent,
-//      activeTrackColor: Colors.green,
-//      activeColor: Colors.white,
-//      onChanged: (value) {
-//        _isOn = !deviceModel.status;
-//        devicesBloc.changeStatusValue(deviceModel.uid, _isOn);
-//        if (_isOn) {
-//          _onPressedFav(context, deviceModel);
-//        }
-//      },
-//    );
-//  }
-
   IconData getCheckIcon(bool checkSelected) {
     return checkSelected ? Icons.check_box : Icons.check_box_outline_blank;
   }
-
-//  void _onPressedFav(BuildContext context, DeviceModel deviceModel) {
-//    Flushbar(
-//      duration: Duration(milliseconds: 900),
-//      borderRadius: 10.0,
-//      /*backgroundGradient: LinearGradient(
-//        colors: [Color(0xFF4268D3), Color(0xFF584CD1)],
-//        stops: [1, 0.5],
-//      ),*/
-//      boxShadows: [
-//        BoxShadow(
-//          color: Colors.black45,
-//          offset: Offset(3, 3),
-//          blurRadius: 5,
-//        ),
-//      ],
-//      padding: EdgeInsets.only(left: 30, top: 5.0, bottom: 5.0),
-//      titleText: Text(
-//        "Has añadido: " + deviceModel.name,
-//        style: TextStyle(
-//          fontSize: 18.0,
-//          fontFamily: "Lato",
-//          fontWeight: FontWeight.bold,
-//          color: Colors.white,
-//        ),
-//      ),
-////      forwardAnimationCurve: Curves.fastLinearToSlowEaseIn,
-//      forwardAnimationCurve: Curves.fastOutSlowIn,
-//      animationDuration: Duration(milliseconds: 900),
-//      icon: Icon(
-//        IconFromIconName(deviceModel.name),
-//        color: Colors.green,
-//        size: 30,
-//      ),
-//      flushbarStyle: FlushbarStyle.FLOATING,
-//      margin: EdgeInsets.only(bottom: 200, left: 8.0, right: 8.0),
-//      dismissDirection: FlushbarDismissDirection.HORIZONTAL,
-//      messageText: Text(
-//        deviceModel.roomName,
-//        style: TextStyle(
-//          fontSize: 18.0,
-//          fontFamily: "Lato",
-//          fontWeight: FontWeight.bold,
-//          color: Colors.white,
-//        ),
-//      ),
-//    )..show(context);
-//  }
 
   @override
   void dispose() {

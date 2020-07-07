@@ -24,7 +24,7 @@ class _RoomsPageState extends State<RoomsPage> {
   var _selected;
   String _roomsId;
   Icon _iconSelected;
-  bool isCleanning = true;
+  bool _isCleanning = true;
   FirebaseUser _currentuser;
   RoomModel _roomModel;
 
@@ -48,7 +48,7 @@ class _RoomsPageState extends State<RoomsPage> {
         hoverElevation: 30,
         child: Icon(Icons.add, size: 30),
         onPressed: () {
-          isCleanning = true;
+          _isCleanning = true;
           _mostrarAlerta(context, _roomsBloc, _userBloc);
         },
       ),
@@ -104,20 +104,6 @@ class _RoomsPageState extends State<RoomsPage> {
       size: 20.0,
       onPressed: () {},
     );
-  }
-
-  Widget _addRoomsBTN(BuildContext context) {
-    return Container(
-        alignment: Alignment.bottomCenter,
-        padding: EdgeInsets.only(right: 10.0, left: 10.0),
-        child: CustomRaisedButton(
-          text: "Añadir habitación",
-          onPressed: () {
-//            _mostrarAlerta(context);
-          },
-          marginBottom: 0.0,
-          color: Colors.grey,
-        ));
   }
 
   void _mostrarAlerta(BuildContext context, RoomsBloc roomsBloc, UserBloc userBloc) {
@@ -184,7 +170,7 @@ class _RoomsPageState extends State<RoomsPage> {
         stream: roomsBloc.iconStream,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
-            return isCleanning ? Icon(null) : snapshot.data;
+            return _isCleanning ? Icon(null) : snapshot.data;
           } else {
             return Icon(null);
           }
@@ -255,7 +241,7 @@ class _RoomsPageState extends State<RoomsPage> {
                       iconEnabledColor: Colors.blueAccent,
                       onChanged: (DocumentSnapshot document) {
                         setState(() {
-                          isCleanning = false;
+                          _isCleanning = false;
                           print(document.data['icon']);
                           _selected = document;
                           _roomsId = document.data['uid'];
@@ -284,7 +270,7 @@ class _RoomsPageState extends State<RoomsPage> {
   void _cleanTextField() {
     _textFieldRoomController.clear();
     _iconSelected = null;
-    isCleanning = true;
+    _isCleanning = true;
     _selected = null;
   }
 
@@ -308,7 +294,8 @@ class _RoomsPageState extends State<RoomsPage> {
           if (document['name'] == null) {
             return cardRoomErroWidget();
           } else {
-            return Padding(
+            return Container(
+              color: Colors.transparent,
               padding: const EdgeInsets.all(8.0),
               child: cardRoomWidget(document),
             );
@@ -327,9 +314,10 @@ class _RoomsPageState extends State<RoomsPage> {
       child: Hero(
         tag: myRoom.uid,
         child: Card(
+          elevation: 15.0,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
           color: Colors.white,
-          child: Container(
+//          child: Container(
             child: Container(
               alignment: Alignment.center,
               child: Column(
@@ -353,7 +341,7 @@ class _RoomsPageState extends State<RoomsPage> {
                 ],
               ),
             ),
-          ),
+//          ),
         ),
       ),
     );

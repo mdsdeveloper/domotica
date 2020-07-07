@@ -30,7 +30,6 @@ class _LoginScreen extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
   final _formKeyLogin = GlobalKey<FormState>();
-
   Orientation _orientation;
 
   @override
@@ -162,7 +161,7 @@ class _LoginScreen extends State<LoginPage> {
             margin: EdgeInsets.only(right: 20.0, left: 20.0),
             child: Center(
               child: Text(
-                "¿Has Olvidado tu contraseña?. No se preocupes, te enviamos una nueva!",
+                "¿Has olvidado tu contraseña?. No te preocupes, te enviamos un email para que puedas crear una nueva!",
                 style: TextStyle(
                   fontSize: 18.0,
                   fontFamily: fontFamilyText,
@@ -181,7 +180,7 @@ class _LoginScreen extends State<LoginPage> {
             children: <Widget>[
               RaisedButton(
                 child: Text(
-                  "ATRAS",
+                  "Atras",
                   style: TextStyle(
                       fontFamily: "Lato",
                       fontSize: 18.0,
@@ -200,7 +199,7 @@ class _LoginScreen extends State<LoginPage> {
               ),
               RaisedButton(
                 child: Text(
-                  "ACEPTAR",
+                  "Enviar",
                   style: TextStyle(
                       fontFamily: "Lato",
                       fontSize: 18.0,
@@ -360,8 +359,8 @@ class _LoginScreen extends State<LoginPage> {
   }
 
   void _cleanTextField() {
-    _emailController.clear();
     _passController.clear();
+    _emailController.clear();
   }
 
   @override

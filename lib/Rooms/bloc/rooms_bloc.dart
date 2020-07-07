@@ -10,7 +10,7 @@ import 'dart:async';
 class RoomsBloc {
   final _cloudFirestoreRepository = CloudFirestoreRepository();
 
-  final _roomsController = BehaviorSubject<String>();
+  final _roomsUIDController = BehaviorSubject<String>();
 
   final _roomModelController = BehaviorSubject<RoomModel>();
 
@@ -24,18 +24,27 @@ class RoomsBloc {
 
   Function(Icon) get changeIcon => _iconController.sink.add;
 
-  Stream<String> get roomsStream => _roomsController.stream;
+  Stream<String> get roomsStream => _roomsUIDController.stream;
 
   Stream<RoomModel> get roomsModelStream => _roomModelController.stream;
 
   void addRoomToUserFirestore(userId, roomsId, RoomModel roomModel) {
     _cloudFirestoreRepository.addRoomToUserFirestore(userId, roomsId, roomModel);
-    _roomsController.sink.add(roomsId);
+    _roomsUIDController.sink.add(roomsId);
+  }
+
+  void changeNameRoomOnFirestore(String roomUID, String value) {
+    _cloudFirestoreRepository.changeNameRoomOnFirestore(roomUID, value);
+
+  }
+
+  void changeNameMyRoomOnServer(String roomUID, String value, String currentuser) {
+    _cloudFirestoreRepository.changeNameMyRoomOnFirestore(roomUID, value, currentuser);
   }
 
   dispose() {
     _iconController?.close();
-    _roomsController?.close();
+    _roomsUIDController?.close();
     _roomModelController?.close();
   }
 

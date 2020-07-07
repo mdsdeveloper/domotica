@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutterappdomotica/Rooms/ui/pages/my_room_page.dart';
 import 'package:flutterappdomotica/Rooms/ui/pages/room_details_page.dart';
 import 'package:flutterappdomotica/Rooms/ui/pages/rooms_page.dart';
 import 'package:flutterappdomotica/Users/ui/pages/policy_page.dart';
@@ -23,5 +24,6 @@ Map<String, WidgetBuilder> getApplicationRoutes() {
     roomsPage         : (BuildContext context) => RoomsPage(),
     settingPage       : (BuildContext context) => SettingPage(),
     roomDetailsPage   : (BuildContext context) => RoomDetailsPage(),
+    myRoomPage        : (BuildContext context) => MyRoomPage(),
   };
 }

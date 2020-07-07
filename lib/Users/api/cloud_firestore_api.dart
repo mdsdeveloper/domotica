@@ -49,13 +49,13 @@ class CloudFirestoreAPI {
 
     refUsers.collection('myrooms').document(roomsId).setData(
         {'uid': roomModel.uid, 'name': roomModel.name, 'icon': roomModel.icon, 'uriImage': roomModel.uriImage},
-        merge: true);
+        merge: true).then((value) => value);
   }
 
-  Stream<QuerySnapshot> getAllDevices(String roomName) {
+  Stream<QuerySnapshot> getAllDevices(String myRoomUID) {
     return _db
         .collection(CloudFirestoreAPI().DEVICES)
-        .where("roomName", isEqualTo: roomName)
+        .where("myRoomUID", isEqualTo: myRoomUID)
         .orderBy('pos', descending: false)
         .snapshots();
   }
@@ -70,5 +70,15 @@ class CloudFirestoreAPI {
     var ref = _db.collection(DEVICES).document(deviceUID);
     _db.runTransaction((transaction) => transaction.update(ref, {'value': value}));
 //    _db.collection(DEVICES).document(deviceUID).updateData({'value': value});
+  }
+
+  void changeNameRoomOnFirestore(String roomUID, String value) {
+    var ref = _db.collection(ROOMS).document(roomUID);
+    _db.runTransaction((transaction) => transaction.update(ref, {'name': value}));
+  }
+
+  void changeNameMyRoomOnFirestore(String roomUID, String value, String currentuser) {
+    var myroomsRef = _db.collection(USERS).document(currentuser).collection("myrooms").document(roomUID);
+    _db.runTransaction((transaction) => transaction.update(myroomsRef, {'name':value}));
   }
 }

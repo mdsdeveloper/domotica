@@ -23,4 +23,8 @@ class CloudFirestoreRepository {
   void changeStatusValue(String deviceUID, bool status) => _cloudFirestoreAPI.changeStatusValue(deviceUID, status);
 
   void changeDeviceValue(String deviceUID, int value) => _cloudFirestoreAPI.changeDeviceValue(deviceUID, value);
+
+  void changeNameRoomOnFirestore(String roomUID, String value) => _cloudFirestoreAPI.changeNameRoomOnFirestore(roomUID, value);
+
+  void changeNameMyRoomOnFirestore(String roomUID, String value, String currentuser) => _cloudFirestoreAPI.changeNameMyRoomOnFirestore(roomUID, value, currentuser);
 }
