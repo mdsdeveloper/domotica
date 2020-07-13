@@ -22,7 +22,6 @@ class _MyRoomPageState extends State<MyRoomPage> {
   ScrollController _scrollController = ScrollController();
   bool _isSelected = false;
   bool _isEditingText = false;
-  TextEditingController _nameController;
   TextEditingController _nameMyRoomController;
   TextEditingController _nController;
   TextEditingController _urlController;
@@ -45,13 +44,7 @@ class _MyRoomPageState extends State<MyRoomPage> {
       });
 
       _myroom = roomData;
-      _nameController = TextEditingController.fromValue(
-        TextEditingValue(
-          text: _myroom.name,
-        ),
-      );
-      _nameMyRoomController = TextEditingController.fromValue(
-          TextEditingValue(text: _myroom.name));
+      _nameMyRoomController = TextEditingController.fromValue(TextEditingValue(text: _myroom.name));
     }
     return Scaffold(
       appBar: AppBar(
@@ -61,7 +54,7 @@ class _MyRoomPageState extends State<MyRoomPage> {
               Navigator.pop(context);
             }),
         backgroundColor: Color(0xFF4268D3),
-        title: _buildNameRoom(),
+        title: _buildNameRoom(_roomBloc),
       ),
       body: Container(
           color: Colors.white54,
@@ -71,14 +64,24 @@ class _MyRoomPageState extends State<MyRoomPage> {
     );
   }
 
-
-  Container _buildNameRoom() {
+   _buildNameRoom(RoomsBloc roomBloc) {
     initialText = _myroom.name;
-    return Container(
-        alignment: Alignment.centerLeft,
-        child: Text(
-          initialText,
-        ));
+    StreamBuilder(
+      stream: roomBloc.roomsModelStream,
+      builder: (context, snapshot){
+        if(snapshot.hasData){
+          return Container(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                snapshot.data['name'],
+              ));
+        }else{
+          return CircularProgressIndicator();
+        }
+      },
+    );
+
+
   }
 
   _body(BuildContext context, RoomsBloc roomBloc) {
@@ -91,55 +94,25 @@ class _MyRoomPageState extends State<MyRoomPage> {
               selectionHeightStyle: BoxHeightStyle.strut,
               onEditingComplete: () {
 //              enviar al servidor y cambiar el nombre
-//                NameShowDialog(context, "Atención", cambiandoNombreRoom);
-                _changeFieldOnServer(_nameController.text, roomBloc);
+//                setState(() {
+                  _changeNameMyRoomOnServer(_nameMyRoomController.text, roomBloc);
+//                });
               },
+              onChanged: roomBloc.changeMyRoom,
               decoration: InputDecoration(
                 icon: Icon(FontAwesomeIcons.edit),
                 isDense: true,
                 helperText: "Cambiar nombre de mi habitación",
-                hintText: _myroom.name,
+//                hintText: _myroom.name,
               ),
               keyboardType: TextInputType.text,
               enableInteractiveSelection: _isSelected,
-              onTap: () {
-//                setState(() {
-                  _nameShowDialog(context, "Atención", cambiandoNombreRoom);
-//                  _isSelected = !_isSelected;
-//                  print(_isSelected);
-//                });
-              },
-              style: TextStyle(fontFamily: "Lato", fontSize: 28, fontWeight: FontWeight.w500),
-              controller: _nameController),
-          TextField(
-              maxLines: 1,
-              minLines: 1,
-              selectionHeightStyle: BoxHeightStyle.strut,
-              onEditingComplete: () {
-//              enviar al servidor y cambiar el nombre
-
-                _changeNameMyRoomOnServer(_nameMyRoomController.text, roomBloc);
-              },
-              decoration: InputDecoration(
-                icon: Icon(FontAwesomeIcons.edit),
-                isDense: true,
-                helperText: "Cambiar nombre de habitación para todos los usuarios",
-                hintText: _myroom.name,
-              ),
-              keyboardType: TextInputType.text,
-              enableInteractiveSelection: _isSelected,
-              onTap: () {
-                setState(() {
-                  _isSelected = !_isSelected;
-                  print(_isSelected);
-                });
-              },
               style: TextStyle(fontFamily: "Lato", fontSize: 28, fontWeight: FontWeight.w500),
               controller: _nameMyRoomController),
           Divider(
             height: 4,
           ),
-         /* TextField(
+          /* TextField(
               maxLines: 1,
               minLines: 1,
               selectionHeightStyle: BoxHeightStyle.strut,
@@ -172,60 +145,50 @@ class _MyRoomPageState extends State<MyRoomPage> {
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _nameMyRoomController.dispose();
     super.dispose();
   }
 
-  void _changeFieldOnServer(String text, RoomsBloc roomBloc) {
-    roomBloc.changeNameRoomOnFirestore(_myroom.uid.trim(), text);
-    print("Cambiando nombre: " + _nameController.text);
-  }
-
   void _changeNameMyRoomOnServer(String text, RoomsBloc roomBloc) {
-    roomBloc.changeNameMyRoomOnServer(_myroom.uid.trim(), text, currentUser.uid);
-    print("Cambiando nombre: " + _nameMyRoomController.text);
+    _nameShowDialog(context, "Atención", cambiandoNombreMyRoom, roomBloc);
   }
 
-    Future _nameShowDialog(BuildContext context, String title, String message) {
-      return showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              backgroundColor: Colors.white,
-              elevation: 10.0,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0)),
-              title: Center(child: Text(title,)),
-              content: Text(message,
-                  style:
-                  TextStyle(fontFamily: fontFamilyText, fontSize: 18.0)),
-              actions: [
-                FlatButton(
-                  child: Text("Cancelar",
-                      style: TextStyle(
-                          fontFamily: fontFamilyText,
-                          fontSize: 18.0,
-                          color: Colors.blueAccent)),
-                  onPressed: () {
-                    setState(() {
-                      _isSelected = false;
-                    });
-                    Navigator.pop(context);},
-                ),
-                FlatButton(
-                  child: Text("Ok",
-                      style: TextStyle(
-                          fontFamily: fontFamilyText,
-                          fontSize: 18.0,
-                          color: Colors.blueAccent)),
-                  onPressed: () {
-                    setState(() {
-                      _isSelected = true;
-                    });
-                    Navigator.pop(context);},
-                )
-              ],
-            );
-          });
-    }
+  Future _nameShowDialog(BuildContext context, String title, String message, RoomsBloc roomBloc) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            elevation: 10.0,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+            title: Center(
+                child: Text(
+              title,
+            )),
+            content: Text(message, style: TextStyle(fontFamily: fontFamilyText, fontSize: 18.0)),
+            actions: [
+              FlatButton(
+                child: Text("Cancelar", style: TextStyle(fontFamily: fontFamilyText, fontSize: 18.0, color: Colors.blueAccent)),
+                onPressed: () {
+                  setState(() {
+                    _isSelected = false;
+                  });
+                  Navigator.pop(context);
+                },
+              ),
+              FlatButton(
+                child: Text("Ok", style: TextStyle(fontFamily: fontFamilyText, fontSize: 18.0, color: Colors.blueAccent)),
+                onPressed: () {
+                 /* setState(() {
+                    _isSelected = true;
+                  });*/
+                  roomBloc.changeNameMyRoomOnServer(_myroom.uid.trim(), _nameMyRoomController.text, currentUser.uid);
+                  print(_nameMyRoomController.text);
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          );
+        });
+  }
 }

@@ -32,7 +32,6 @@ class RoomDetailsPage extends StatefulWidget {
 
 class _RoomDetailsPageState extends State<RoomDetailsPage> {
   MyRoom _myroom;
-  FirebaseUser _currentuser;
   final TextEditingController _nameController = TextEditingController();
   final ScrollController _controllerListView = ScrollController();
   final FocusNode focusNode = FocusNode();
@@ -41,16 +40,12 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   bool editClicking = false;
   bool _isPressedDelete = false;
-  bool _checkSelected = false;
   bool _isOn;
   bool isOnOffDevice;
   double screenWidth;
   double screenHeight;
   double _valorSlider = 0.0;
   List<Widget> lista = new List();
-  final String DEVICES = "devices";
-
-//  Device device;
 
   @override
   void initState() {
@@ -60,8 +55,6 @@ class _RoomDetailsPageState extends State<RoomDetailsPage> {
   @override
   Widget build(BuildContext context) {
     final roomData = ModalRoute.of(context).settings.arguments;
-//    final _roomBloc = Provider.roomsBloc(context);
-//    final _userBloc = Provider.userBloc(context);
     final devicesBloc = Provider.devicesBloc(context);
     double withDrawer = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;

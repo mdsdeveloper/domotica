@@ -45,7 +45,7 @@ const String fontFamilyText = 'Lato';
 // Textos
 const usuarioExiste        = "Este usuario ya está registrado";
 const verificarEmail       = "Te hemos enviado un email de verificación";
-const cambiandoNombreRoom  = "Si cambias este nombre se cambiará para todos los usuarios";
+const cambiandoNombreMyRoom  = "Cambiar el nombre de la habitación";
 const resetPassword        = "Te hemos enviado un email para reestablecer la contraseña";
 const resetPasswordError   = "Error al enviar el email, el usuario no existe";
 const registrarUsuario     = "El usuario no existe, por favor registre el usuario";

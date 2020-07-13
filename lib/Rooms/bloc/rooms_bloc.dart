@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutterappdomotica/Rooms/model/my_room.dart';
 import 'package:flutterappdomotica/Rooms/model/room_model.dart';
 import 'package:flutterappdomotica/Users/repository/cloud_firestore_repository.dart';
 import 'package:rxdart/rxdart.dart';
@@ -11,6 +12,8 @@ class RoomsBloc {
   final _cloudFirestoreRepository = CloudFirestoreRepository();
 
   final _roomsUIDController = BehaviorSubject<String>();
+
+  final _myroomNameController = BehaviorSubject<String>();
 
   final _roomModelController = BehaviorSubject<RoomModel>();
 
@@ -22,7 +25,11 @@ class RoomsBloc {
 
   Stream<Icon> get iconStream => _iconController.stream;
 
+  Stream<String> get myRoomNameStream => _myroomNameController.stream;
+
   Function(Icon) get changeIcon => _iconController.sink.add;
+
+  Function(String) get changeMyRoom => _myroomNameController.sink.add;
 
   Stream<String> get roomsStream => _roomsUIDController.stream;
 
@@ -33,10 +40,9 @@ class RoomsBloc {
     _roomsUIDController.sink.add(roomsId);
   }
 
-  void changeNameRoomOnFirestore(String roomUID, String value) {
+/*  void changeNameRoomOnFirestore(String roomUID, String value) {
     _cloudFirestoreRepository.changeNameRoomOnFirestore(roomUID, value);
-
-  }
+  }*/
 
   void changeNameMyRoomOnServer(String roomUID, String value, String currentuser) {
     _cloudFirestoreRepository.changeNameMyRoomOnFirestore(roomUID, value, currentuser);
@@ -46,6 +52,7 @@ class RoomsBloc {
     _iconController?.close();
     _roomsUIDController?.close();
     _roomModelController?.close();
+    _myroomNameController?.close();
   }
 
   void addRoomModel(RoomModel roomModel) {

@@ -72,10 +72,10 @@ class CloudFirestoreAPI {
 //    _db.collection(DEVICES).document(deviceUID).updateData({'value': value});
   }
 
-  void changeNameRoomOnFirestore(String roomUID, String value) {
+/*  void changeNameRoomOnFirestore(String roomUID, String value) {
     var ref = _db.collection(ROOMS).document(roomUID);
     _db.runTransaction((transaction) => transaction.update(ref, {'name': value}));
-  }
+  }*/
 
   void changeNameMyRoomOnFirestore(String roomUID, String value, String currentuser) {
     var myroomsRef = _db.collection(USERS).document(currentuser).collection("myrooms").document(roomUID);
